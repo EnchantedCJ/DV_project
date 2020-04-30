@@ -1,0 +1,110 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Level 2 Visualization</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ url_for('level1') }}">Home</a></li>
+                        <li class="breadcrumb-item active">Level 2</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="m-0">Featured</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="card1" style="height: 600%"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+</div>
+
+<script>
+    $.get('/dataset2', function (dataset) {
+        console.log(dataset);
+        var geojson = dataset.geojson;
+        var data = dataset.data;
+
+        echarts.registerMap('myMap', geojson);
+        var myChart = echarts.init(document.getElementById('card1'));
+        var option = {
+            title: {
+                text: 'Level 1',
+                left: 'right'
+            },
+            tooltip: {
+                trigger: 'item',
+                showDelay: 0,
+                transitionDuration: 0.2,
+                formatter: function (params) {
+                    var value = (params.value + '').split('.');
+                    value = value[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,');
+                    return params.seriesName + '<br/>' + params.name + ': ' + value;
+                }
+            },
+            visualMap: {
+                left: 'right',
+                min: 500000,
+                max: 38000000,
+                inRange: {
+                    color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+                },
+                text: ['High', 'Low'],           // 文本，默认为数值文本
+                calculable: true
+            },
+            toolbox: {
+                show: true,
+                //orient: 'vertical',
+                left: 'left',
+                top: 'top',
+                feature: {
+                    dataView: { readOnly: false },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            series: [
+                // basemap
+                {
+                    name: 'TODO: 人口 or 震害？',
+                    type: 'map',
+                    map: 'myMap',
+                    roam: true,
+                    emphasis: {
+                        label: {
+                            show: true
+                        }
+                    },
+                    data: data
+                }
+            ]
+        }
+        myChart.setOption(option);
+        myChart.resize();
+    })
+</script>
+
+{% endblock %}
