@@ -56,7 +56,7 @@ def dataset1():
 @app.route('/dataset2')
 def dataset2():
     # input geojson
-    with open('./data/geo/Hebei/Hebei_county.geojson', 'r', encoding='utf-8') as f:
+    with open('./data/geo/Hebei_county.geojson', 'r', encoding='utf-8') as f:
         geojson = json.loads(f.read())  # str2dict
 
     # input data
