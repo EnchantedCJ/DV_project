@@ -29,8 +29,7 @@
                         <div class="card-header">
                             <h5 class="m-0">Featured</h5>
                         </div>
-                        <div class="card-body">
-                            <div id="card1" style="height: 600%"></div>
+                        <div class="card-body" id="card1" style="height: 600px">
                         </div>
                     </div>
                 </div>
@@ -39,7 +38,7 @@
                         <div class="card-header">
                             <h5 class="m-0">Stations</h5>
                         </div>
-                        <div class="card-body table-responsive p-0">
+                        <div class="card-body table-responsive p-0" style="height: 600px">
                             <table class="table table-head-fixed text-nowrap">
                                 <thead>
                                     <tr>
@@ -65,8 +64,10 @@
 <script>
     $.get('/dataset2', function (dataset) {
         // get dataset
+        console.log(dataset);
         var geojson = dataset.geojson;
         var info = dataset.info;
+        var stations = dataset.stations;
 
         // card1
         echarts.registerMap('myMap', geojson);
@@ -181,14 +182,49 @@
                     data: [
                         [info.lng, info.lat, info.time, info.loc, info.mag, info.depth]
                     ],
-                }
+                },
 
                 // stations
-                // TODO
+                {
+                    name: 'Stations',
+                    type: 'scatter',
+                    coordinateSystem: 'geo',
+                    symbolSize: 5,
+                    label: {
+                        normal: {
+                            show: false
+                        },
+                        emphasis: {
+                            show: false,
+                        }
+                    },
+                    tooltip: {
+                        formatter: function (params) {
+                            return 'Name: ' + params.value[2] + '<br/>'
+                                + 'Lng: ' + params.value[0] + ' °E<br/>'
+                                + 'Lat: ' + params.value[1] + ' °N<br/>'
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: '#fff'
+                        }
+                    },
+                    data: stations, // lng,lat,name,ew,ns,ud
+                }
             ]
         }
         myChart.setOption(option);
         myChart.resize();
+
+        // card2
+        for (i = 0; i < stations.length; i++) {
+            id=i+1
+            $("#card2").append("<tr><td>" + id + "</td>"
+                + "<td>" + stations[i][2] + "</td>"
+                + "<td>" + stations[i][0] + ", " + stations[i][1] + "</td></tr>"
+            );
+        }
     })
 </script>
 

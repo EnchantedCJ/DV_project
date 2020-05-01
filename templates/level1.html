@@ -29,8 +29,7 @@
                         <div class="card-header">
                             <h5 class="m-0">Featured</h5>
                         </div>
-                        <div class="card-body">
-                            <div id="card1" style="height: 600%"></div>
+                        <div class="card-body" id="card1" style="height: 600px">
                         </div>
                     </div>
                 </div>
@@ -39,7 +38,7 @@
                         <div class="card-header">
                             <h5 class="m-0">Recent Earthquakes</h5>
                         </div>
-                        <div class="card-body table-responsive p-0">
+                        <div class="card-body table-responsive p-0" style="height: 600px">
                             <table class="table table-head-fixed text-nowrap">
                                 <thead>
                                     <tr>
@@ -68,6 +67,7 @@
 <script>
     $.get('/dataset1', function (dataset) {
         // get dataset
+        // console.log(dataset);
         var geojson = dataset.geojson;
         var info = dataset.info;
 
@@ -182,12 +182,12 @@
         });
 
         // card2
-        $("#card2").append("<tr><td>"+1+"</td>"
-            +"<td>"+info.time+"</td>"
-            +"<td>"+info.loc+"</td>"
-            +"<td>"+info.lng+", "+info.lat+"</td>"
-            +"<td>"+info.mag+"</td>"
-            +"<td>"+info.depth+"</td></tr>"
+        $("#card2").append("<tr><td>" + 1 + "</td>"
+            + "<td>" + info.time + "</td>"
+            + "<td>" + info.loc + "</td>"
+            + "<td>" + info.lng + ", " + info.lat + "</td>"
+            + "<td>" + info.mag + "</td>"
+            + "<td>" + info.depth + "</td></tr>"
         );
     })
 </script>

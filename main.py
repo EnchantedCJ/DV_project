@@ -63,7 +63,7 @@ def dataset2():
     with open('./data/seismic/earthquake_info.json', 'r', encoding='utf-8') as f:
         info = json.loads(f.read())
 
-    # input data
+    # input distribution data
     # TODO
     # features = geojson['features']
     # data = [{
@@ -72,12 +72,27 @@ def dataset2():
     # } for feature in features]
 
     # input station info
-    # TODO
+    with open('./data/seismic/station.txt', 'r', encoding='utf-8') as f:
+        f.readline()
+        stations = []
+        for line in f.readlines():
+            station = []
+            temp = line.strip('\n').split()
+            # name,ew,ns,ud,lat,lng -> lng,lat,name,ew,ns,ud
+            station.append('%.3f' % float(temp[5]))  # name
+            station.append('%.3f' % float(temp[4]))  # name
+            station.append(temp[0])  # name
+            station.append('%.3f' % float(temp[1]))  # name
+            station.append('%.3f' % float(temp[2]))  # name
+            station.append('%.3f' % float(temp[3]))  # name
+            stations.append(station)
+    # TODO: station damage
 
     # dumping
     dataset = {
         'geojson': geojson,
-        'info':info
+        'info': info,
+        'stations': stations
         # 'data': data
     }
 
