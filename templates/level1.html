@@ -34,6 +34,29 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-6">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="m-0">Recent Earthquakes</h5>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Time</th>
+                                        <th>Location</th>
+                                        <th>Coordinate (°E, °N)</th>
+                                        <th>Magnitude (Mw)</th>
+                                        <th>Depth (km)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="card2">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 <!-- /.col-md-6 -->
             </div>
             <!-- /.row -->
@@ -44,10 +67,11 @@
 
 <script>
     $.get('/dataset1', function (dataset) {
-        console.log(dataset);
+        // get dataset
         var geojson = dataset.geojson;
         var info = dataset.info;
 
+        // card1
         echarts.registerMap('myMap', geojson);
         var myChart = echarts.init(document.getElementById('card1'));
         var option = {
@@ -132,10 +156,10 @@
                         formatter: function (params) {
                             return 'Time: ' + params.value[2] + '<br/>'
                                 + 'Loc: ' + params.value[3] + '<br/>'
-                                + 'Lng: ' + params.value[0] + '<br/>'
-                                + 'Lat: ' + params.value[1] + '<br/>'
-                                + 'Mag: ' + params.value[4] + '<br/>'
-                                + 'Depth: ' + params.value[5] + '<br/>';
+                                + 'Lng: ' + params.value[0] + ' °E<br/>'
+                                + 'Lat: ' + params.value[1] + ' °N<br/>'
+                                + 'Mag: Mw ' + params.value[4] + '<br/>'
+                                + 'Depth: ' + params.value[5] + ' km<br/>';
                         }
                     },
                     itemStyle: {
@@ -156,6 +180,15 @@
         myChart.on('click', { seriesName: 'Epicenter' }, function () {
             window.location.href = "{{ url_for('level2') }}"
         });
+
+        // card2
+        $("#card2").append("<tr><td>"+1+"</td>"
+            +"<td>"+info.time+"</td>"
+            +"<td>"+info.loc+"</td>"
+            +"<td>"+info.lng+", "+info.lat+"</td>"
+            +"<td>"+info.mag+"</td>"
+            +"<td>"+info.depth+"</td></tr>"
+        );
     })
 </script>
 

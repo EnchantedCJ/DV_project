@@ -34,6 +34,26 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-6">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="m-0">Stations</h5>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Coordinate (°E, °N)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="card2">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 <!-- /.col-md-6 -->
             </div>
             <!-- /.row -->
@@ -44,15 +64,16 @@
 
 <script>
     $.get('/dataset2', function (dataset) {
-        console.log(dataset);
+        // get dataset
         var geojson = dataset.geojson;
-        var data = dataset.data;
+        var info = dataset.info;
 
+        // card1
         echarts.registerMap('myMap', geojson);
         var myChart = echarts.init(document.getElementById('card1'));
         var option = {
             title: {
-                text: 'Level 1',
+                text: 'Level 2',
                 left: 'right'
             },
             tooltip: {
@@ -65,16 +86,16 @@
                     return params.seriesName + '<br/>' + params.name + ': ' + value;
                 }
             },
-            visualMap: {
-                left: 'right',
-                min: 500000,
-                max: 38000000,
-                inRange: {
-                    color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
-                },
-                text: ['High', 'Low'],           // 文本，默认为数值文本
-                calculable: true
-            },
+            // visualMap: {
+            //     left: 'right',
+            //     min: 500000,
+            //     max: 38000000,
+            //     inRange: {
+            //         color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+            //     },
+            //     text: ['High', 'Low'],           // 文本，默认为数值文本
+            //     calculable: true
+            // },
             toolbox: {
                 show: true,
                 //orient: 'vertical',
@@ -86,20 +107,84 @@
                     saveAsImage: {}
                 }
             },
-            series: [
-                // basemap
-                {
-                    name: 'TODO: 人口 or 震害？',
-                    type: 'map',
-                    map: 'myMap',
-                    roam: true,
+            // basemap
+            geo: {
+                map: 'myMap',
+                show: true,
+                roam: true,
+                label: {
+                    normal: {
+                        show: false
+                    },
                     emphasis: {
-                        label: {
-                            show: true
+                        show: true,
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        areaColor: '#3a7fd5',
+                        borderColor: '#0a53e9',//线
+                        shadowColor: '#092f8f',//外发光
+                        shadowBlur: 20
+                    },
+                    emphasis: {
+                        areaColor: '#0a2dae',//悬浮区背景
+                    }
+                }
+            },
+            series: [
+                // // basemap
+                // {
+                //     name: 'TODO: 人口 or 震害？',
+                //     type: 'map',
+                //     map: 'myMap',
+                //     roam: true,
+                //     emphasis: {
+                //         label: {
+                //             show: true
+                //         }
+                //     },
+                //     data: data
+                // }
+
+                // epicenter
+                {
+                    name: 'Epicenter',
+                    type: 'scatter',
+                    coordinateSystem: 'geo',
+                    symbolSize: function (data) {
+                        return data[4] * 5; // magnitude*5
+                    },
+                    label: {
+                        normal: {
+                            show: false
+                        },
+                        emphasis: {
+                            show: false,
                         }
                     },
-                    data: data
+                    tooltip: {
+                        formatter: function (params) {
+                            return 'Time: ' + params.value[2] + '<br/>'
+                                + 'Loc: ' + params.value[3] + '<br/>'
+                                + 'Lng: ' + params.value[0] + ' °E<br/>'
+                                + 'Lat: ' + params.value[1] + ' °N<br/>'
+                                + 'Mag: Mw ' + params.value[4] + '<br/>'
+                                + 'Depth: ' + params.value[5] + ' km<br/>';
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: '#fff'
+                        }
+                    },
+                    data: [
+                        [info.lng, info.lat, info.time, info.loc, info.mag, info.depth]
+                    ],
                 }
+
+                // stations
+                // TODO
             ]
         }
         myChart.setOption(option);

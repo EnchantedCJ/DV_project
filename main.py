@@ -59,17 +59,26 @@ def dataset2():
     with open('./data/geo/Hebei_county.geojson', 'r', encoding='utf-8') as f:
         geojson = json.loads(f.read())  # str2dict
 
+    # input earthquake info
+    with open('./data/seismic/earthquake_info.json', 'r', encoding='utf-8') as f:
+        info = json.loads(f.read())
+
     # input data
-    features = geojson['features']
-    data = [{
-        'name': feature['properties']['name'],
-        'value':float(feature['properties']['AREA'])  # testing!!!!
-    } for feature in features]
+    # TODO
+    # features = geojson['features']
+    # data = [{
+    #     'name': feature['properties']['name'],
+    #     'value':float(feature['properties']['AREA'])  # testing!!!!
+    # } for feature in features]
+
+    # input station info
+    # TODO
 
     # dumping
     dataset = {
         'geojson': geojson,
-        'data': data
+        'info':info
+        # 'data': data
     }
 
     return dataset
