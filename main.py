@@ -1,12 +1,13 @@
 import flask
 from flask_cors import CORS
 from flask import Flask, redirect, render_template, url_for
-
+import os
 import json
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 CORS(app)
+
 
 # page routing
 @app.route('/')
@@ -33,10 +34,17 @@ def level3():
 def level4():
     return render_template('level4.html')
 
+
+@app.route('/bmap')
+def bmap():
+    return render_template('effect_bmap.html')
+
+
 # dataset routing
 @app.route('/dataset1')
 def dataset1():
     # input geojson
+    path = os.getcwd()
     with open('./data/geo/全国.json', 'r', encoding='utf-8') as f:
         geojson = json.loads(f.read())  # str2dict
 
@@ -44,10 +52,28 @@ def dataset1():
     with open('./data/seismic/earthquake_info.json', 'r', encoding='utf-8') as f:
         info = json.loads(f.read())
 
+    with open('./data/seismic/earthquake.csv', 'r', encoding='utf-8') as f:
+        f.readline()
+        earthquakes = []
+        not_word = ['日本', '俄罗', '巴坦', '吉尔', '印尼', '菲律', '琉球', '克什', '印度', '棉兰', '老挝', '缅甸', '先岛', '蒙古']
+        for line in f.readlines():
+            earthquake = []
+            temp = line.strip().split(',')
+            # time,mag,lat,lng,depth,loc -> lng,lat,time,loc,mag,depth
+            if temp[-1][:2] not in not_word:
+                earthquake.append('%.3f' % float(temp[3]))  # lng
+                earthquake.append('%.3f' % float(temp[2]))  # lat
+                earthquake.append(temp[0])  # time
+                earthquake.append(temp[5])  # loc
+                earthquake.append('%.1f' % float(temp[1]))  # mag
+                earthquake.append('%.0f' % float(temp[4]))  # depth
+                earthquakes.append(earthquake)
+
     # dumping
     dataset = {
         'geojson': geojson,
-        'info': info
+        'info': info,
+        'earthquakes': earthquakes
     }
 
     return dataset
@@ -60,6 +86,7 @@ def dataset2():
         geojson = json.loads(f.read())  # str2dict
 
     # input earthquake info
+
     with open('./data/seismic/earthquake_info.json', 'r', encoding='utf-8') as f:
         info = json.loads(f.read())
 
