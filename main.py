@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask import Flask, redirect, render_template, url_for
 import os
 import json
+import numpy as np
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -114,7 +115,7 @@ def dataset2():
             station.append('%.3f' % float(temp[3]))  # name
             stations.append(station)
     # TODO: station damage
-
+    print(stations)
     # dumping
     dataset = {
         'geojson': geojson,
@@ -128,8 +129,68 @@ def dataset2():
 
 @app.route('/dataset3')
 def dataset3():
-    pass
+    # input geojson
+    with open('./data/station_damage/Hebei_county.geojson', 'r', encoding='utf-8') as f:
+        geojson = json.loads(f.read())  # str2dict
 
+    # input earthquake info
+
+    with open('./data/station_damage/earthquake_info.json', 'r', encoding='utf-8') as f:
+        info = json.loads(f.read())
+
+    # input distribution data
+    # TODO
+    all_station_data = np.loadtxt('./data/station_damage/station_damage_all.csv',
+                                    delimiter=",", dtype="str")
+    use_cols = np.arange(3, all_station_data.shape[1], 1)
+    stations_inf = all_station_data[:, 0: 3]
+    all_station_inf = []
+    for inf in stations_inf:
+        all_station_inf.append(inf.tolist())
+    all_station_data = np.loadtxt('./data/station_damage/station_damage_all.csv',
+                                    delimiter=",", dtype="float", usecols=use_cols)
+
+    damage_frame, damage_shear, damage_un_ma, damage_re_ma, damage_tu_mu, damage_hu_zo, PGA = [], [], [], [], [], [], []
+    for damage in all_station_data:
+        damage_frame.append(damage[0: 5].tolist())
+        damage_shear.append(damage[5: 10].tolist())
+        damage_un_ma.append(damage[10: 15].tolist())
+        damage_re_ma.append(damage[15: 20].tolist())
+        damage_tu_mu.append(damage[20: 25].tolist())
+        damage_hu_zo.append(damage[25: 30].tolist())
+        PGA.append(damage[30: 33].tolist())
+    print(damage_frame, "\n", damage_shear, "\n", damage_un_ma, "\n", damage_re_ma, "\n", damage_tu_mu, "\n", PGA)
+    # print(damage_frame, "\n", damage_shear, "\n", damage_un_ma, "\n", damage_re_ma, "\n", damage_tu_mu, "\n", PGA)
+    # print(type(all_station_damage), all_station_inf)
+    dataset = {
+        'geojson': geojson,
+        'info': info,
+        'station_inf': all_station_inf,
+        'damage_frame': damage_frame,
+        'damage_shear': damage_shear,
+        'damage_un_ma': damage_un_ma,
+        'damage_re_ma': damage_re_ma,
+        'damage_tu_mu': damage_tu_mu,
+        'damage_hu_zo': damage_hu_zo,
+        'PGA': PGA
+    }
+    # print(all_station_inf, all_station_damage)
+    '''
+    dataset = {
+        'geojson': geojson,
+        'info': info,
+        'station_inf': all_station_inf,
+        'damage': all_station_damage,
+    }
+
+    damage_frame = all_station_damage[0: 5]
+    damage_shear = all_station_damage[5: 10]
+    damage_un_ma = all_station_damage[10: 15]
+    damage_re_ma = all_station_damage[15: 20]
+    damage_tu_mu = all_station_damage[20: 25]
+    PGA = all_station_damage[25: 28]
+    '''
+    return dataset
 
 @app.route('/dataset4')
 def dataset4():
