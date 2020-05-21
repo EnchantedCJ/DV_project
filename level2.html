@@ -72,6 +72,7 @@
             var geojson = dataset.geojson;
             var info = dataset.info;
             var stations = dataset.stations;
+            console.log(stations)
 
             // card1
             echarts.registerMap('myMap', geojson);
@@ -137,7 +138,7 @@
                         }
                     }
                 },
-                series:
+                series:[
                     // {
                     //     name: 'TODO: 人口 or 震害？',
                     //     type: 'map',
@@ -234,7 +235,14 @@
                     + "<td>" + stations[i][5] + "</td></tr>"
                 );
             }
-        })
+
+        myChart.on('click', {seriesName: 'Stations'}, function (param) {
+                const name = param.value[2];
+                var loginDataStoreKey = "stationname";
+                window.sessionStorage.setItem(loginDataStoreKey, name);
+                window.location.href = "{{ url_for('level3') }}";
+        });
+    })
     </script>
 
 {% endblock %}
