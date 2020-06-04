@@ -124,6 +124,7 @@
                         },
                         emphasis: {
                             show: true,
+                            color:'#CCFFFF',
                         }
                     },
                     itemStyle: {
@@ -142,7 +143,7 @@
                     // epicenter
                     {
                         name: 'Epicenter',
-                        type: 'scatter',
+                        type: 'effectScatter',
                         coordinateSystem: 'geo',
                         symbolSize: function (data) {
                             console.log(data[4] * 5, 'tang')
@@ -156,6 +157,11 @@
                                 show: false,
                             }
                         },
+                        showEffectOn: 'render',
+                        rippleEffect: {
+                            brushType: 'stroke'
+                        },
+                        hoverAnimation: true,
                         tooltip: {
                             formatter: function (params) {
                                 console.log(12)
@@ -169,7 +175,7 @@
                         },
                         itemStyle: {
                             normal: {
-                                color: '#fff'
+                                color: '#999900'
                             }
                         },
                         data: [
@@ -178,7 +184,7 @@
                     },
                     {
                         name: 'other_earthquake',
-                        type: 'scatter',
+                        type: 'effectScatter',
                         coordinateSystem: 'geo',
                         symbolSize: function (data) {
                             return data[4] * 2; // magnitude*5
@@ -191,6 +197,11 @@
                                 show: false
                             }
                         },
+                        showEffectOn: 'render',
+                        rippleEffect: {
+                            brushType: 'stroke'
+                        },
+                        hoverAnimation: true,
                         tooltip: {
                             formatter: function (params) {
                                 return 'Time: ' + params.value[2] + '<br/>'
@@ -203,7 +214,7 @@
                         },
                         itemStyle: {
                             normal: {
-                                color: '#d73027'
+                                color: '#FF6666'
                             }
                         },
                         data: earthquakes // lng,lat,name,ew,ns,ud

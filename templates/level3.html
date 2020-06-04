@@ -30,16 +30,16 @@
                                 <div class="card-header">
                                     <h5 class="m-0">Station Location</h5>
                                 </div>
-                                <div class="card-body" id="card1" style="height: 350px; width: 760px">
+                                <div class="card-body" id="card1" style="height: 450px; width: 760px">
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-12">
                             <div class="card card-primary card-outline 2">
                                 <div class="card-header">
-                                    <h5 class="m-0">Station & Damage</h5>
+                                    <h5 class="m-0">Station Information</h5>
                                 </div>
-                                <div class="card-body table-responsive p-0" style="height: 200px; width: 100%">
+                                <div class="card-body table-responsive p-0" style="height: 100px; width: 100%">
                                     <table class="table table-head-fixed text-nowrap">
                                         <thead>
                                         <tr>
@@ -57,13 +57,51 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="card card-primary card-outline 2">
-                            <div class="card-header">
-                                <h5 class="m-0">Damage of this Station</h5>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="card card-primary card-outline 2">
+                                    <div class="card-header">
+                                        <h5 class="m-0">  Ground Motion EW (Time - Acce)</h5>
+                                        <div class="card-body" id="card4" style="height: 250px"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-body" id="card3" style="height: 615px; width: 100%">
+                            <div class="col-lg-6">
+                                <div class="card card-primary card-outline 2">
+                                    <div class="card-header">
+                                        <h5 class="m-0">   Ground Motion NS (Time - Acce)</h5>
+                                        <div class="card-body" id="card5" style="height: 250px"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="col-lg-12">
+                            <div class="card card-primary card-outline 2">
+                                <div class="card-header">
+                                    <h5 class="m-0">Damage of this Station</h5>
+                                </div>
+                                <div class="card-body" id="card3" style="height: 615px; width: 100%">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="card card-primary card-outline 2">
+                                    <div class="card-header">
+                                        <h5 class="m-0">Ground Motion EW (Time - Acce)</h5>
+                                        <div class="card-body" id="card6" style="height: 250px"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card card-primary card-outline 2">
+                                    <div class="card-header">
+                                        <h5 class="m-0">Response Sepctrum (Period - Acce)</h5>
+                                        <div class="card-body" id="card6" style="height: 250px"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -76,6 +114,164 @@
     </div>
 
     <script>
+
+
+const Station_name = sessionStorage.getItem("stationname");
+
+        $.get('/dataset_GM', Station_name, function (dataset2){
+
+            console.log(dataset2);
+            
+            var station_name = dataset2.station_name;
+            var EW_time = dataset2.EW_time;
+            var NS_time = dataset2.NS_time;
+            var UD_time = dataset2.UD_time;
+            var EW_ACCE = dataset2.EW_ACCE;
+            var NS_ACCE = dataset2.NS_ACCE;
+            var UD_ACCE = dataset2.UD_ACCE;
+
+            var myChart3 = echarts.init(document.getElementById('card4'));
+            var option3 = {
+
+                //x轴显示
+                xAxis: {
+                    type: 'category',
+                    data: EW_time,
+                    // name: "Time (s)",
+                    // nameLocation:'middle',         //---轴名称相对位置
+                    // nameTextStyle:{             //---坐标轴名称样式
+                    //     color:"#000",
+                    //     //padding:[20,-75,10,-50], //---坐标轴名称相对位置
+                    //     fontSize:14,
+                    //     font:'Times New Roman'
+                    // },
+                },
+
+                yAxis: {
+                    position:'left',            //---y轴位置
+                    type: 'value',
+                    // name: "Acceleration \n(m/s^2)",
+                    // nameTextStyle:{             //---坐标轴名称样式
+                    //     color:"#000",
+                    //     fontSize:14,
+                    //     font:'Times New Roman'
+                    // },
+                },
+                series: [{
+                    data: EW_ACCE,
+                    type: 'line',
+                    lineStyle:{
+                        color:'#2e68aa',
+                        width:0.3,
+                        type:'solid',
+                    },
+                }],
+
+                grid:{
+                    left:'0%',
+                    right:'0%',
+                    bottom:'0%',
+                    top:"3%",
+                    containLabel:true
+                },
+
+                tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                },
+            };
+            
+            myChart3.setOption(option3);
+            myChart3.resize();
+
+            var myChart4 = echarts.init(document.getElementById('card5'));
+            var option4 = {
+
+                //x轴显示
+                xAxis: {
+                    type: 'category',
+                    data: NS_time,
+                },
+
+                yAxis: {
+                    position:'left',            //---y轴位置
+                    type: 'value',
+                },
+                
+                series: [{
+                    data: NS_ACCE,
+                    type: 'line',
+                    lineStyle:{
+                        color:'#2e68aa',
+                        width:0.3,
+                        type:'solid',
+                    },
+                }],
+
+                grid:{
+                    left:'0%',
+                    right:'0%',
+                    bottom:'0%',
+                    top:"3%",
+                    containLabel:true
+                },
+
+                tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                },
+            };
+            
+            myChart4.setOption(option4);
+            myChart4.resize();
+
+            var myChart5 = echarts.init(document.getElementById('card6'));
+            var option5 = {
+
+                //x轴显示
+                xAxis: {
+                    type: 'category',
+                    data: UD_time,
+                },
+
+                yAxis: {
+                    position:'left',            //---y轴位置
+                    type: 'value',
+
+                },
+                series: [{
+                    data: UD_ACCE,
+                    type: 'line',
+                    lineStyle:{
+                        color:'#2e68aa',
+                        width:0.3,
+                        type:'solid',
+                    },
+                }],
+
+                grid:{
+                    left:'0%',
+                    right:'0%',
+                    bottom:'0%',
+                    top:"3%",
+                    containLabel:true
+                },
+
+                tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                },
+            };
+            myChart5.setOption(option5);
+            myChart5.resize();
+        })
+
         $.get('/dataset3', function (dataset) {
             // get dataset
             console.log(dataset);
@@ -92,7 +288,7 @@
             var damage_hu_zo = dataset.damage_hu_zo;
             var PGA = dataset.PGA;
             const Station_name = sessionStorage.getItem("stationname");
-            console.log(Station_name);
+            // console.log(Station_name);
             for (i = 0; i < station_inf.length; i++) {
                 //console.log(station_inf[i][0]);
                 if (station_inf[i][0] == Station_name)
@@ -133,8 +329,8 @@
                     show: true,
                     roam: true,
                     aspectScale: 0.75,
-                    layoutCenter: ["15%", "70%"],
-                    layoutSize: 1500,
+                    layoutCenter: ["-10%", "55%"],
+                    layoutSize: 3000,
                     label: {
                         normal: {
                             show: false
@@ -241,9 +437,8 @@
                 + "<td>" + PGA[series][2] + "</td></tr>"
             );
 
-            //card2_new
+            //card3
             var myChart2 = echarts.init(document.getElementById('card3'));
-            // var myChart2 = echarts.init.getElementById('card2');
             var option2 = {
 
                 toolbox: {
@@ -266,40 +461,85 @@
 
                 //x轴显示
                 xAxis: {
-                    data: ["框架结构","框架-剪力墙结构","未设防砌体","设防砌体", "土木结构","汇总"],
+                    data: ["框架\n结构","框架-剪力墙\n结构","未设防\n砌体","设防\n砌体", "土木\n结构","汇总"],
                     splitLine:{
-                    　　　　show:false
-                    　　}
+                　　　　show:true
+                　　},
+                    TextStyle:{             //---坐标轴名称样式
+                        color:"#000",
+                        fontSize:20,
+                        font:'Times New Roman'
+                    },
+
+                    axisTick:{                  //---坐标轴 刻度
+                        show:true,                  //---是否显示
+                        inside:true,                //---是否朝内
+                        lengt:3,                    //---长度
+                        lineStyle:{
+                            color:'black',          //---默认取轴线的颜色
+                            width:2,
+                            type:'solid',
+                        },
+                    },
+
+                    axisLabel:{                 //---坐标轴 标签
+                        show:true,                  //---是否显示
+                        inside:false,               //---是否朝内
+                        rotate:0,                   //---旋转角度   
+                        margin: 5,                  //---刻度标签与轴线之间的距离
+                        color:'black',
+                        fontSize:16              //---默认取轴线的颜色
+                    },
                 },
 
                 //y轴显示
                 yAxis: {
-                    splitLine:{
-                    　　　　show:false
-                    　　}
+                    min: 0.0,
+                    max: 1.0,
+                    type: 'value',
+
+                    axisTick:{                  //---坐标轴 刻度
+                        show:true,                  //---是否显示
+                        inside:true,                //---是否朝内
+                        lengt:3,                    //---长度
+                        lineStyle:{
+                            color:'black',          //---默认取轴线的颜色
+                            width:2,
+                            type:'solid',
+                        },
+                    },
+
+                    axisLabel:{                 //---坐标轴 标签
+                        show:true,                  //---是否显示
+                        inside:false,               //---是否朝内
+                        rotate:0,                   //---旋转角度   
+                        margin: 5,                  //---刻度标签与轴线之间的距离
+                        color:'black',
+                        fontSize:16              //---默认取轴线的颜色
+                    },
                 },
 
                 grid:{
-                    left:'0%',
-                    right:'0%',
-                    bottom:'0%',
-                    top:"10%",
+                    left:'3%',
+                    right:'2%',
+                    bottom:'5%',
+                    top:"15%",
                     containLabel:true
                 },
 
                 tooltip: {
-                        trigger: 'axis',
-                        axisPointer: {
-                            type: 'shadow'
-                        }
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
                 },
 
-                yAxis: {
-                        type: 'value',
-                        splitLine:{
-                    　　　　show:false
-                    　　}
-                },
+                // yAxis: {
+                //         type: 'value',
+                //         splitLine:{
+                //     　　　　show:false
+                //     　　}
+                // },
 
 
                 series: [
@@ -343,7 +583,7 @@
                     {
                         name: '毁坏',
                         type: 'bar',
-                        //barWidth: 5,
+                        barWidth: 50,
                         stack: '1',
                         itemStyle:{
                             normal:{color:'#FF2222'}
@@ -355,7 +595,15 @@
             myChart2.setOption(option2);
             myChart2.resize();
 
+            myChart.on('click', {seriesName: 'Stations'}, function (param) {
+                const name = Station_name;
+                var loginDataStoreKey = "stationname";
+                window.sessionStorage.setItem(loginDataStoreKey, name);
+                window.location.href = "{{ url_for('level4') }}";
+            });
+
         })
+
     </script>
 
 {% endblock %}
