@@ -1,248 +1,315 @@
 {% extends "index.html" %}
 
 {% block content %}
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0 text-dark">Level 2 Visualization</h1>
-                    </div><!-- /.col -->
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{ url_for('level1') }}">Home</a></li>
-                            <li class="breadcrumb-item active">Level 2</li>
-                        </ol>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.container-fluid -->
-        </div>
-        <!-- /.content-header -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Level 2 Visualization</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ url_for('level1') }}">Home</a></li>
+                        <li class="breadcrumb-item active">Level 2</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
 
-        <!-- Main content -->
-        <div class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="card card-primary card-outline">
-                            <div class="card-header">
-                                <h5 class="m-0">Featured</h5>
-                            </div>
-                            <div class="card-body" id="card1" style="height: 600px">
-                            </div>
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="m-0">Station Location</h5>
+                        </div>
+                        <div class="card-body" id="card1" style="height: 600px">
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="card card-primary card-outline">
-                            <div class="card-header">
-                                <h5 class="m-0">Stations</h5>
-                            </div>
-                            <div class="card-body table-responsive p-0" style="height: 600px">
-                                <table class="table table-head-fixed text-nowrap">
-                                    <thead>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="m-0">Stations</h5>
+                        </div>
+                        <div class="card-body table-responsive p-0" style="height: 600px">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Coordinate (°E, °N)</th>
-                                        <th>EW</th>
-                                        <th>NS</th>
-                                        <th>UD</th>
+                                        <th>PGA EW</th>
+                                        <th>PGA NS</th>
+                                        <th>PGA UD</th>
+                                        <th>Damage Score</th>
                                     </tr>
-                                    </thead>
-                                    <tbody id="card2">
-                                    </tbody>
-                                </table>
-                            </div>
+                                </thead>
+                                <tbody id="card2">
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <!-- /.col-md-6 -->
                 </div>
-                <!-- /.row -->
-            </div><!-- /.container-fluid -->
-        </div>
-        <!-- /.content -->
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
     </div>
+    <!-- /.content -->
+</div>
 
-    <script>
-        $.get('/dataset2', function (dataset) {
-            // get dataset
-            console.log(dataset);
-            ``
-            var geojson = dataset.geojson;
-            var info = dataset.info;
-            var stations = dataset.stations;
-            console.log(stations)
+<script>
+    $.get('/dataset2', function (dataset) {
+        // get dataset
+        console.log(dataset);
+        var geojson = dataset.geojson;
+        var info = dataset.info;
+        var stations = dataset.stations;
+        var stations_heat = dataset.stations_heat;
+        console.log(stations);
 
-            // card1
-            echarts.registerMap('myMap', geojson);
-            var myChart = echarts.init(document.getElementById('card1'));
-            var option = {
-                title: {
-                    text: 'Level 2',
-                    left: 'right'
+        // card1
+        echarts.registerMap('myMap', geojson);
+        var myChart = echarts.init(document.getElementById('card1'));
+        var option = {
+            title: {
+                text: 'Level 2',
+                left: 'right'
+            },
+            legend: {
+                icon: 'circle',
+                orient: 'vertical',
+                top: 'bottom',
+                left: 'left',
+                data: [
+                    { name: '热力图-框架结构' },
+                    { name: '热力图-框架-剪力墙结构', },
+                    { name: '热力图-未设防砌体', },
+                    { name: '热力图-设防砌体', },
+                    { name: '热力图-土木结构', },
+                    { name: '热力图-汇总', },
+                ],
+                selectedMode: 'single',
+                selected: {
+                    '热力图-框架结构': false,
+                    '热力图-框架-剪力墙结构': false,
+                    '热力图-未设防砌体': false,
+                    '热力图-设防砌体': false,
+                    '热力图-土木结构': false,
+                    '热力图-汇总': true
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                showDelay: 0,
+                transitionDuration: 0.2,
+                formatter: function (params) {
+                    var value = (params.value + '').split('.');
+                    value = value[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,');
+                    return params.seriesName + '<br/>' + params.name + ': ' + value;
+                }
+            },
+            visualMap: {
+                seriesIndex: [1, 2, 3, 4, 5, 6, 7], // use series heatmap and stations
+                left: 'right',
+                min: 0,
+                max: 1,
+                inRange: {
+                    color: ['#1F6FD5', '#71DD5E', '#FFF155', '#E08011', '#FF2222']
                 },
-                tooltip: {
-                    trigger: 'item',
-                    showDelay: 0,
-                    transitionDuration: 0.2,
-                    formatter: function (params) {
-                        var value = (params.value + '').split('.');
-                        value = value[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,');
-                        return params.seriesName + '<br/>' + params.name + ': ' + value;
+                text: ['High', 'Low'],           // 文本，默认为数值文本
+                calculable: true
+            },
+            toolbox: {
+                show: true,
+                //orient: 'vertical',
+                left: 'left',
+                top: 'top',
+                feature: {
+                    dataView: { readOnly: false },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            // basemap
+            geo: {
+                map: 'myMap',
+                show: true,
+                roam: true,
+                aspectScale: 0.75,
+                layoutCenter: ["-10%", "55%"],
+                layoutSize: 3000,
+                label: {
+                    normal: {
+                        show: false
+                    },
+                    emphasis: {
+                        show: true,
                     }
                 },
-                // visualMap: {
-                //     left: 'right',
-                //     min: 500000,
-                //     max: 38000000,
-                //     inRange: {
-                //         color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
-                //     },
-                //     text: ['High', 'Low'],           // 文本，默认为数值文本
-                //     calculable: true
-                // },
-                toolbox: {
-                    show: true,
-                    //orient: 'vertical',
-                    left: 'left',
-                    top: 'top',
-                    feature: {
-                        dataView: {readOnly: false},
-                        restore: {},
-                        saveAsImage: {}
+                itemStyle: {
+                    normal: {
+                        areaColor: '#D3D3D3',
+                        borderColor: '#000000',//线
+                        shadowColor: '#FFFFFF',//外发光
+                        shadowBlur: 20
+                    },
+                    emphasis: {
+                        areaColor: '#808080',//悬浮区背景
                     }
                 },
-                // basemap
-                geo: {
-                    map: 'myMap',
-                    show: true,
-                    roam: true,
+            },
+            series: [
+                // epicenter
+                {
+                    name: 'Epicenter',
+                    type: 'effectScatter',
+                    showEffectOn: 'render',
+                    rippleEffect: {
+                        brushType: 'stroke'
+                    },
+                    hoverAnimation: true,
+                    coordinateSystem: 'geo',
+                    symbolSize: function (data) {
+                        return data[4] * 5; // magnitude*5
+                    },
                     label: {
                         normal: {
                             show: false
                         },
                         emphasis: {
-                            show: true,
+                            show: false,
+                        }
+                    },
+                    tooltip: {
+                        formatter: function (params) {
+                            return 'Time: ' + params.value[2] + '<br/>'
+                                + 'Loc: ' + params.value[3] + '<br/>'
+                                + 'Lng: ' + params.value[0] + ' °E<br/>'
+                                + 'Lat: ' + params.value[1] + ' °N<br/>'
+                                + 'Mag: Mw ' + params.value[4] + '<br/>'
+                                + 'Depth: ' + params.value[5] + ' km<br/>';
                         }
                     },
                     itemStyle: {
                         normal: {
-                            areaColor: '#3a7fd5',
-                            borderColor: '#0a53e9',//线
-                            shadowColor: '#092f8f',//外发光
-                            shadowBlur: 20
+                            color: '#FF0000'
+                        }
+                    },
+                    data: [
+                        [info.lng, info.lat, info.time, info.loc, info.mag, info.depth]
+                    ],
+                },
+
+                // heatmaps
+                {
+                    name: '热力图-框架结构',
+                    type: 'heatmap',
+                    coordinateSystem: 'geo',
+                    data: stations_heat[0],
+                    blurSize: 100
+                },
+                {
+                    name: '热力图-框架-剪力墙结构',
+                    type: 'heatmap',
+                    coordinateSystem: 'geo',
+                    data: stations_heat[1],
+                    blurSize: 100
+                },
+                {
+                    name: '热力图-未设防砌体',
+                    type: 'heatmap',
+                    coordinateSystem: 'geo',
+                    data: stations_heat[2],
+                    blurSize: 100
+                },
+                {
+                    name: '热力图-设防砌体',
+                    type: 'heatmap',
+                    coordinateSystem: 'geo',
+                    data: stations_heat[3],
+                    blurSize: 100
+                },
+                {
+                    name: '热力图-土木结构',
+                    type: 'heatmap',
+                    coordinateSystem: 'geo',
+                    data: stations_heat[4],
+                    blurSize: 100
+                },
+                {
+                    name: '热力图-汇总',
+                    type: 'heatmap',
+                    coordinateSystem: 'geo',
+                    data: stations_heat[5],
+                    blurSize: 100
+                },
+
+                // stations
+                {
+                    name: 'Stations',
+                    type: 'scatter',
+                    coordinateSystem: 'geo',
+                    symbol: 'triangle',
+                    symbolSize: 15,
+                    label: {
+                        normal: {
+                            show: false
                         },
                         emphasis: {
-                            areaColor: '#0a2dae',//悬浮区背景
+                            show: false,
                         }
-                    }
-                },
-                series:[
-                    // {
-                    //     name: 'TODO: 人口 or 震害？',
-                    //     type: 'map',
-                    //     map: 'myMap',
-                    //     roam: true,
-                    //     emphasis: {
-                    //         label: {
-                    //             show: true
-                    //         }
-                    //     },
-                    //     data: data
-                    // }
-
-                    // epicenter
-                    {
-                        name: 'Epicenter',
-                        type: 'scatter',
-                        coordinateSystem: 'geo',
-                        symbolSize: function (data) {
-                            return data[4] * 5; // magnitude*5
-                        },
-                        label: {
-                            normal: {
-                                show: false
-                            },
-                            emphasis: {
-                                show: false,
-                            }
-                        },
-                        tooltip: {
-                            formatter: function (params) {
-                                return 'Time: ' + params.value[2] + '<br/>'
-                                    + 'Loc: ' + params.value[3] + '<br/>'
-                                    + 'Lng: ' + params.value[0] + ' °E<br/>'
-                                    + 'Lat: ' + params.value[1] + ' °N<br/>'
-                                    + 'Mag: Mw ' + params.value[4] + '<br/>'
-                                    + 'Depth: ' + params.value[5] + ' km<br/>';
-                            }
-                        },
-                        itemStyle: {
-                            normal: {
-                                color: '#fff'
-                            }
-                        },
-                        data: [
-                            [info.lng, info.lat, info.time, info.loc, info.mag, info.depth]
-                        ],
                     },
+                    tooltip: {
+                        formatter: function (params) {
+                            return 'Name: ' + params.value[2] + '<br/>'
+                                + 'Lng: ' + params.value[0] + ' °E<br/>'
+                                + 'Lat: ' + params.value[1] + ' °N<br/>'
+                                + 'EW: ' + params.value[3] + ' <br/>'
+                                + 'NS: ' + params.value[4] + ' <br/>'
+                                + 'UD: ' + params.value[5] + ' <br/>'
+                                + 'Damage Score: ' + params.value[11] + ' <br/>'
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: '#fff'
+                        }
+                    },
+                    data: stations, // lng,lat,name,ew,ns,ud
+                },
+            ]
+        }
+        myChart.setOption(option);
+        myChart.resize();
 
-                    // stations
-                    {
-                        name: 'Stations',
-                        type: 'scatter',
-                        coordinateSystem: 'geo',
-                        symbolSize: 5,
-                        label: {
-                            normal: {
-                                show: false
-                            },
-                            emphasis: {
-                                show: false,
-                            }
-                        },
-                        tooltip: {
-                            formatter: function (params) {
-                                return 'Name: ' + params.value[2] + '<br/>'
-                                    + 'Lng: ' + params.value[0] + ' °E<br/>'
-                                    + 'Lat: ' + params.value[1] + ' °N<br/>'
-                                    + 'EW: ' + params.value[3] + ' <br/>'
-                                    + 'NS: ' + params.value[4] + ' <br/>'
-                                    + 'UD: ' + params.value[5] + ' <br/>'
-                            }
-                        },
-                        itemStyle: {
-                            normal: {
-                                color: '#fff'
-                            }
-                        },
-                        data: stations, // lng,lat,name,ew,ns,ud
-                    }
-                ]
-            }
-            myChart.setOption(option);
-            myChart.resize();
+        // card2
+        for (i = 0; i < stations.length; i++) {
+            id = i + 1
+            $("#card2").append("<tr><td>" + id + "</td>"
+                + "<td>" + stations[i][2] + "</td>"
+                + "<td>" + stations[i][0] + ", " + stations[i][1] + "</td>"
+                + "<td>" + stations[i][3] + "</td>"
+                + "<td>" + stations[i][4] + "</td>"
+                + "<td>" + stations[i][5] + "</td>"
+                + "<td>" + stations[i][11] + "</td></tr>"
+            );
+        }
 
-            // card2
-            for (i = 0; i < stations.length; i++) {
-                id = i + 1
-                $("#card2").append("<tr><td>" + id + "</td>"
-                    + "<td>" + stations[i][2] + "</td>"
-                    + "<td>" + stations[i][0] + ", " + stations[i][1] + "</td>"
-                    + "<td>" + stations[i][3] + "</td>"
-                    + "<td>" + stations[i][4] + "</td>"
-                    + "<td>" + stations[i][5] + "</td></tr>"
-                );
-            }
-
-        myChart.on('click', {seriesName: 'Stations'}, function (param) {
-                const name = param.value[2];
-                var loginDataStoreKey = "stationname";
-                window.sessionStorage.setItem(loginDataStoreKey, name);
-                window.location.href = "{{ url_for('level3') }}";
+        myChart.on('click', { seriesName: 'Stations' }, function (param) {
+            const name = param.value[2];
+            var loginDataStoreKey = "stationname";
+            window.sessionStorage.setItem(loginDataStoreKey, name);
+            window.location.href = "{{ url_for('level3') }}";
         });
     })
-    </script>
+</script>
 
 {% endblock %}

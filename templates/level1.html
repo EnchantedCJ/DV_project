@@ -1,48 +1,48 @@
 {% extends "index.html" %}
 
 {% block content %}
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0 text-dark">Level 1 Visualization</h1>
-                    </div><!-- /.col -->
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{ url_for('level1') }}">Home</a></li>
-                            <li class="breadcrumb-item active">Level 1</li>
-                        </ol>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.container-fluid -->
-        </div>
-        <!-- /.content-header -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Level 1 Visualization</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ url_for('level1') }}">Home</a></li>
+                        <li class="breadcrumb-item active">Level 1</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
 
-        <!-- Main content -->
-        <div class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="card card-primary card-outline">
-                            <div class="card-header">
-                                <h5 class="m-0">Featured</h5>
-                            </div>
-                            <div class="card-body" id="card1" style="height: 600px">
-                                {#                            <iFrame src="http://127.0.0.1:5000/bmap" width="530" height="550" scrolling="no">#}
-                                {#                            </iFrame>#}
-                            </div>
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="m-0">Earthquake Location</h5>
+                        </div>
+                        <div class="card-body" id="card1" style="height: 600px">
+                            {#                            <iFrame src="http://127.0.0.1:5000/bmap" width="530" height="550" scrolling="no">#}
+                            {#                            </iFrame>#}
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="card card-primary card-outline">
-                            <div class="card-header">
-                                <h5 class="m-0">Recent Earthquakes</h5>
-                            </div>
-                            <div class="card-body table-responsive p-0" style="height: 600px">
-                                <table class="table table-head-fixed text-nowrap">
-                                    <thead>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="m-0">Recent Earthquakes</h5>
+                        </div>
+                        <div class="card-body table-responsive p-0" style="height: 600px">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
                                     <tr>
                                         <th>ID</th>
                                         <th>Time</th>
@@ -51,186 +51,279 @@
                                         <th>Magnitude (Mw)</th>
                                         <th>Depth (km)</th>
                                     </tr>
-                                    </thead>
-                                    <tbody id="card2">
-                                    </tbody>
-                                </table>
-                            </div>
+                                </thead>
+                                <tbody id="card2">
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <!-- /.col-md-6 -->
                 </div>
-                <!-- /.row -->
-            </div><!-- /.container-fluid -->
-        </div>
-        <!-- /.content -->
+                <!-- /.col-md-6 -->
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="m-0">Timeline</h5>
+                        </div>
+                        <div class="card-body" id="card3" style="height: 400px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
     </div>
+    <!-- /.content -->
+</div>
 
-    <script>
-        $.get('/dataset1', function (dataset) {
-            // get dataset
-            console.log(dataset);
-            var geojson = dataset.geojson;
-            var info = dataset.info;
-            var earthquakes = dataset.earthquakes;
+<script>
+    $.get('/dataset1', function (dataset) {
+        // get dataset
+        console.log(dataset);
+        var geojson = dataset.geojson;
+        var info = dataset.info;
+        var earthquakes = dataset.earthquakes;
 
-            // card1
-            echarts.registerMap('myMap', geojson);
-            var myChart = echarts.init(document.getElementById('card1'));
-            var option = {
-                title: {
-                    text: 'Level 1',
-                    left: 'right'
-                },
-                tooltip: {
-                    trigger: 'item',
-                    showDelay: 0,
-                    transitionDuration: 0.2,
-                    formatter: function (params) {
-                        var value = (params.value + '').split('.');
-                        value = value[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,');
-                        return params.seriesName + '<br/>' + params.name + ': ' + value;
-                    }
-                },
-                visualMap: {
-                    left: 'right',
-                    min: 500000,
-                    max: 38000000,
-                    inRange: {
-                        color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+        var earthquakes_timeline = []  // time, mag, lng, lat, loc, depth
+        earthquakes.map(item => { earthquakes_timeline.push([item[2], item[4], item[0], item[1], item[3], item[5]]) })
+
+        // card1
+        echarts.registerMap('myMap', geojson);
+        var myChart = echarts.init(document.getElementById('card1'));
+        var option = {
+            title: {
+                text: 'Level 1',
+                left: 'right'
+            },
+            tooltip: {
+                trigger: 'item',
+                showDelay: 0,
+                transitionDuration: 0.2,
+                formatter: function (params) {
+                    var value = (params.value + '').split('.');
+                    value = value[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,');
+                    return params.seriesName + '<br/>' + params.name + ': ' + value;
+                }
+            },
+            // visualMap: {
+            //     left: 'right',
+            //     min: 500000,
+            //     max: 38000000,
+            //     inRange: {
+            //         color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+            //     },
+            //     text: ['High', 'Low'],           // 文本，默认为数值文本
+            //     calculable: true
+            // },
+            toolbox: {
+                show: true,
+                //orient: 'vertical',
+                left: 'left',
+                top: 'top',
+                feature: {
+                    dataView: { readOnly: false },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            // basemap
+            geo: {
+                map: 'myMap',
+                show: true,
+                roam: true,
+                label: {
+                    normal: {
+                        show: false
                     },
-                    text: ['High', 'Low'],           // 文本，默认为数值文本
-                    calculable: true
-                },
-                toolbox: {
-                    show: true,
-                    //orient: 'vertical',
-                    left: 'left',
-                    top: 'top',
-                    feature: {
-                        dataView: {readOnly: false},
-                        restore: {},
-                        saveAsImage: {}
+                    emphasis: {
+                        show: true
                     }
                 },
-                // basemap
-                geo: {
-                    map: 'myMap',
-                    show: true,
-                    roam: true,
+                itemStyle: {
+                    normal: {
+                        areaColor: '#D3D3D3',
+                        borderColor: '#000000',//线
+                        shadowColor: '#FFFFFF',//外发光
+                        shadowBlur: 20
+                    },
+                    emphasis: {
+                        areaColor: '#808080',//悬浮区背景
+                    }
+                }
+            },
+            series: [
+                // epicenter
+                {
+                    name: 'Epicenter',
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    symbolSize: function (data) {
+                        console.log(data[4] * 5, 'tang')
+                        return data[4] * 5; // magnitude*5
+                    },
                     label: {
                         normal: {
                             show: false
                         },
                         emphasis: {
-                            show: true,
+                            show: false,
+                        }
+                    },
+                    showEffectOn: 'render',
+                    rippleEffect: {
+                        brushType: 'stroke'
+                    },
+                    hoverAnimation: true,
+                    tooltip: {
+                        formatter: function (params) {
+                            console.log(12)
+                            return 'Time: ' + params.value[2] + '<br/>'
+                                + 'Loc: ' + params.value[3] + '<br/>'
+                                + 'Lng: ' + params.value[0] + ' °E<br/>'
+                                + 'Lat: ' + params.value[1] + ' °N<br/>'
+                                + 'Mag: Mw ' + params.value[4] + '<br/>'
+                                + 'Depth: ' + params.value[5] + ' km<br/>';
                         }
                     },
                     itemStyle: {
                         normal: {
-                            areaColor: '#3a7fd5',
-                            borderColor: '#0a53e9',//线
-                            shadowColor: '#092f8f',//外发光
-                            shadowBlur: 20
+                            color: '#FF0000'
+                        }
+                    },
+                    data: [
+                        [info.lng, info.lat, info.time, info.loc, info.mag, info.depth]
+                    ],
+                    zlevel: 10
+                },
+                {
+                    name: 'other_earthquake',
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    symbolSize: function (data) {
+                        return data[4] * 2; // magnitude*5
+                    },
+                    label: {
+                        normal: {
+                            show: false
                         },
                         emphasis: {
-                            areaColor: '#0a2dae',//悬浮区背景
+                            show: false
                         }
-                    }
-                },
-                series: [
-                    // epicenter
-                    {
-                        name: 'Epicenter',
-                        type: 'scatter',
-                        coordinateSystem: 'geo',
-                        symbolSize: function (data) {
-                            console.log(data[4] * 5, 'tang')
-                            return data[4] * 5; // magnitude*5
-                        },
-                        label: {
-                            normal: {
-                                show: false
-                            },
-                            emphasis: {
-                                show: false,
-                            }
-                        },
-                        tooltip: {
-                            formatter: function (params) {
-                                console.log(12)
-                                return 'Time: ' + params.value[2] + '<br/>'
-                                    + 'Loc: ' + params.value[3] + '<br/>'
-                                    + 'Lng: ' + params.value[0] + ' °E<br/>'
-                                    + 'Lat: ' + params.value[1] + ' °N<br/>'
-                                    + 'Mag: Mw ' + params.value[4] + '<br/>'
-                                    + 'Depth: ' + params.value[5] + ' km<br/>';
-                            }
-                        },
-                        itemStyle: {
-                            normal: {
-                                color: '#fff'
-                            }
-                        },
-                        data: [
-                            [info.lng, info.lat, info.time, info.loc, info.mag, info.depth]
-                        ]
                     },
-                    {
-                        name: 'other_earthquake',
-                        type: 'scatter',
-                        coordinateSystem: 'geo',
-                        symbolSize: function (data) {
-                            return data[4] * 2; // magnitude*5
-                        },
-                        label: {
-                            normal: {
-                                show: false
-                            },
-                            emphasis: {
-                                show: false
-                            }
-                        },
-                        tooltip: {
-                            formatter: function (params) {
-                                return 'Time: ' + params.value[2] + '<br/>'
-                                    + 'Loc: ' + params.value[3] + '<br/>'
-                                    + 'Lng: ' + params.value[0] + ' °E<br/>'
-                                    + 'Lat: ' + params.value[1] + ' °N<br/>'
-                                    + 'Mag: Mw ' + params.value[4] + '<br/>'
-                                    + 'Depth: ' + params.value[5] + ' km<br/>';
-                            }
-                        },
-                        itemStyle: {
-                            normal: {
-                                color: '#d73027'
-                            }
-                        },
-                        data: earthquakes // lng,lat,name,ew,ns,ud
-                    }
-                ]
-            }
-            {#console.log((earthquakes))#}
-            myChart.setOption(option);
-            myChart.resize();
+                    showEffectOn: 'render',
+                    rippleEffect: {
+                        brushType: 'stroke'
+                    },
+                    hoverAnimation: true,
+                    tooltip: {
+                        formatter: function (params) {
+                            return 'Time: ' + params.value[2] + '<br/>'
+                                + 'Loc: ' + params.value[3] + '<br/>'
+                                + 'Lng: ' + params.value[0] + ' °E<br/>'
+                                + 'Lat: ' + params.value[1] + ' °N<br/>'
+                                + 'Mag: Mw ' + params.value[4] + '<br/>'
+                                + 'Depth: ' + params.value[5] + ' km<br/>';
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: '#FF6666'
+                        }
+                    },
+                    data: earthquakes // lng,lat,name,ew,ns,ud
+                }
+            ]
+        }
+        myChart.setOption(option);
+        myChart.resize();
 
-            // level1 -> level2
-            myChart.on('click', {seriesName: 'Epicenter'}, function () {
-                window.location.href = "{{ url_for('level2') }}"
-            });
+        // level1 -> level2
+        myChart.on('click', { seriesName: 'Epicenter' }, function () {
+            window.location.href = "{{ url_for('level2') }}"
+        });
 
-            // card1
-            for (i = 0; i < earthquakes.length; i++) {
-                id = i + 1
-                $("#card2").append("<tr><td>" + id + "</td>"
-                    + "<td>" + earthquakes[i][2] + "</td>"
-                    + "<td>" + earthquakes[i][3] + "</td>"
-                    + "<td>" + earthquakes[i][0] + ", " + earthquakes[i][1] + "</td>"
-                    + "<td>" + earthquakes[i][4] + "</td>"
-                    + "<td>" + earthquakes[i][5] + "</td></tr>"
-                );
-            }
-        })
-    </script>
+        // card2
+        for (i = 0; i < earthquakes.length; i++) {
+            id = i + 1
+            $("#card2").append("<tr><td>" + id + "</td>"
+                + "<td>" + earthquakes[i][2] + "</td>"
+                + "<td>" + earthquakes[i][3] + "</td>"
+                + "<td>" + earthquakes[i][0] + ", " + earthquakes[i][1] + "</td>"
+                + "<td>" + earthquakes[i][4] + "</td>"
+                + "<td>" + earthquakes[i][5] + "</td></tr>"
+            );
+        }
+
+        // card3
+        var myChart3 = echarts.init(document.getElementById('card3'));
+        var option3 = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross'
+                },
+                formatter: function (params) {
+                    return 'Time: ' + params[0].value[0] + '<br/>'
+                        + 'Loc: ' + params[0].value[4] + '<br/>'
+                        + 'Lng: ' + params[0].value[2] + ' °E<br/>'
+                        + 'Lat: ' + params[0].value[3] + ' °N<br/>'
+                        + 'Mag: Mw ' + params[0].value[1] + '<br/>'
+                        + 'Depth: ' + params[0].value[5] + ' km<br/>'
+                }
+            },
+            toolbox: {
+                show: true,
+                //orient: 'vertical',
+                left: 'left',
+                top: 'top',
+                feature: {
+                    dataView: { readOnly: false },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            visualMap: {
+                dimension: 1,
+                left: 'right',
+                min: 4,
+                max: 7,
+                text: ['High', 'Low'],           // 文本，默认为数值文本
+                calculable: true
+            },
+            xAxis: [
+                {
+                    name: 'Time',
+                    type: 'time',
+                    splitLine: { show: false }
+                }
+            ],
+            yAxis: [
+                {
+                    name: 'Magnitude (Mw)',
+                    type: 'value',
+                    min: 4
+                }
+            ],
+            dataZoom: [
+                {
+                    type: 'inside',
+                    xAxisIndex: [0],
+                }
+            ],
+            series: [
+                {
+                    name: 'Earthquakes',
+                    type: 'scatter',
+                    data: earthquakes_timeline,
+                }
+            ]
+
+        };
+        myChart3.setOption(option3);
+        myChart3.resize();
+
+    })
+</script>
 
 {% endblock %}

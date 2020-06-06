@@ -1,0 +1,369 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark">Level 4 Visualization</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ url_for('level3') }}">Home</a></li>
+                            <li class="breadcrumb-item active">Level 3</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-primary card-outline 2">
+                            <div class="card-header">
+                                <h5 class="m-0">Overall Damage Index</h5>
+                            </div>
+                            <div class="card-body" id="card1" style="height: 700px; width: 750px;">
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-lg-6">
+                        <div class="card card-primary card-outline 2">
+                            <div class="card-header">
+                                <h5 class="m-0">Damage Index (Resistance ±1 SD)</h5>
+                                <div class="card-body" id="card4" style="height: 700px; width: 750px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+    </div>
+
+    <script>
+
+
+const Station_name = sessionStorage.getItem("stationname");
+
+        $.get('/dataset4', function (dataset2){
+
+            console.log(dataset2);
+            
+            var dataset_p = dataset2.dataset_p;
+            var dataset_m = dataset2.dataset_m;
+            var dataset_d = dataset2.dataset_d;
+            var geojson = dataset2.geojson;
+
+            var station_inf = dataset_p.station_inf;
+            var damage_frame_p = dataset_p.damage_frame;
+            var damage_shear_p = dataset_p.damage_shear;
+            var damage_un_ma_p = dataset_p.damage_un_ma;
+            var damage_re_ma_p = dataset_p.damage_re_ma;
+            var damage_tu_mu_p = dataset_p.damage_tu_mu;
+            var damage_hu_zo_p = dataset_p.damage_hu_zo;
+
+            var damage_frame_m = dataset_m.damage_frame;
+            var damage_shear_m = dataset_m.damage_shear;
+            var damage_un_ma_m = dataset_m.damage_un_ma;
+            var damage_re_ma_m = dataset_m.damage_re_ma;
+            var damage_tu_mu_m = dataset_m.damage_tu_mu;
+            var damage_hu_zo_m = dataset_m.damage_hu_zo;
+
+            var damage_frame_d = dataset_d.damage_frame;
+            var damage_shear_d = dataset_d.damage_shear;
+            var damage_un_ma_d = dataset_d.damage_un_ma;
+            var damage_re_ma_d = dataset_d.damage_re_ma;
+            var damage_tu_mu_d = dataset_d.damage_tu_mu;
+            var damage_hu_zo_d = dataset_d.damage_hu_zo;
+
+            const Station_name = sessionStorage.getItem("stationname");
+            // console.log(Station_name);
+            for (i = 0; i < station_inf.length; i++) {
+                //console.log(station_inf[i][0]);
+                if (station_inf[i] == Station_name)
+                    series = i;
+            }
+            console.log(station_inf[series]);
+
+            var lineStyle = {
+                normal: {
+                    width: 1,
+                    opacity: 0.5
+                }
+            };
+
+            var damage_info_p = [damage_frame_p[series], damage_shear_p[series], damage_un_ma_p[series], damage_re_ma_p[series], damage_tu_mu_p[series], damage_hu_zo_p[series]];
+            var damage_overall_p = [0, 0, 0, 0, 0, 0];
+
+            for (j = 0; j < 6; j++) {
+                damage_this_series = damage_info_p[j];
+                for (i = 0; i < 5; i++) {
+                    damage_overall_p[j] = damage_overall_p[j] + i * damage_this_series[i];
+                }
+                damage_overall_p[j] = damage_overall_p[j] / 4;
+            }
+
+
+            var damage_info_m = [damage_frame_m[series], damage_shear_m[series], damage_un_ma_m[series], damage_re_ma_m[series], damage_tu_mu_m[series], damage_hu_zo_m[series]];
+            var damage_overall_m = [0, 0, 0, 0, 0, 0];
+
+            for (j = 0; j < 6; j++) {
+                damage_this_series = damage_info_m[j];
+                for (i = 0; i < 5; i++) {
+                    damage_overall_m[j] = damage_overall_m[j] + i * damage_this_series[i];
+                }
+                damage_overall_m[j] = damage_overall_m[j] / 4;
+            }
+
+            var damage_info_d = [damage_frame_d[series], damage_shear_d[series], damage_un_ma_d[series], damage_re_ma_d[series], damage_tu_mu_d[series], damage_hu_zo_d[series]];
+            var damage_overall_d = [0, 0, 0, 0, 0, 0];
+
+            for (j = 0; j < 6; j++) {
+                damage_this_series = damage_info_d[j];
+                for (i = 0; i < 5; i++) {
+                    damage_overall_d[j] = damage_overall_d[j] + i * damage_this_series[i];
+                }
+                damage_overall_d[j] = damage_overall_d[j] / 4;
+            }
+
+            var myChart = echarts.init(document.getElementById('card4'));
+
+            option = {
+                backgroundColor: '#161627',
+                // title: {
+                //     text: 'AQI - 雷达图',
+                //     left: 'center',
+                //     textStyle: {
+                //         color: '#eee'
+                //     }
+                // },
+                legend: {
+                    bottom: 5,
+                    data: ['加一倍标准差', '抗力取中位值', '减一倍标准差'],
+                    itemGap: 20,
+                    textStyle: {
+                        color: '#fff',
+                        fontSize: 18
+                    },
+                    selectedMode: 'single'
+                },
+
+                tooltip: {},
+                // visualMap: {
+                //     show: true,
+                //     min: 0,
+                //     max: 20,
+                //     dimension: 6,
+                //     inRange: {
+                //         colorLightness: [0.5, 0.8]
+                //     }
+                // },
+
+                radar: {
+                    indicator: [
+                        {name: '框架结构', max: 1, min: 0},
+                        {name: '框架-\n剪力墙', max: 1, min: 0},
+                        {name: '未设防\n砌体', max: 1, min: 0},
+                        {name: '设防砌体', max: 1, min: 0},
+                        {name: '土木\n结构', max: 1, min: 0},
+                        {name: '总体\n情况', max: 1, min: 0}
+                    ],
+                    shape: 'circle',
+                    splitNumber: 5,
+                    name: {
+                        textStyle: {
+                            color: 'rgb(238, 197, 102)',
+                            fontSize: 18
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: [
+                                'rgba(238, 197, 102, 0.1)', 'rgba(238, 197, 102, 0.2)',
+                                'rgba(238, 197, 102, 0.4)', 'rgba(238, 197, 102, 0.6)',
+                                'rgba(238, 197, 102, 0.8)', 'rgba(238, 197, 102, 1)'
+                            ].reverse()
+                        }
+                    },
+
+                    splitArea: {
+                        show: false
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: 'rgba(238, 197, 102, 0.5)'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: '加一倍标准差',
+                        type: 'radar',
+                        lineStyle: lineStyle,
+                        data: [damage_overall_p],
+                        symbol: 'none',
+                        itemStyle: {
+                            color: '#F9713C'
+                        },
+                        areaStyle: {
+                            opacity: 0.3
+                        }
+                    },
+                    {
+                        name: '抗力取中位值',
+                        type: 'radar',
+                        lineStyle: lineStyle,
+                        data: [damage_overall_d],
+                        symbol: 'none',
+                        itemStyle: {
+                            color: '#B3E4A1'
+                        },
+                        areaStyle: {
+                            opacity: 0.3
+                        }
+                    },
+                    {
+                        name: '减一倍标准差',
+                        type: 'radar',
+                        lineStyle: lineStyle,
+                        data: [damage_overall_m],
+                        symbol: 'none',
+                        itemStyle: {
+                            color: 'rgb(238, 197, 102)'
+                        },
+                        areaStyle: {
+                            opacity: 0.3
+                        }
+                    }
+                ]
+            };
+            
+            myChart.setOption(option);
+            myChart.resize();
+
+
+            var myChart2 = echarts.init(document.getElementById('card1'));
+            option2 = {
+                tooltip: {},
+                toolbox: {
+                    feature: {
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                series: [
+                    {
+                        name: '总体震害情况',
+                        type: 'gauge',
+                        // center: ['77%', '50%'], 
+                        data: [{value: damage_overall_p[5], name: '加一倍标准差', itemStyle:{color:"71DD5E"}}],
+                        min: 0,
+                        max: 1,
+
+                        axisTick: {            // 坐标轴小标记
+                            length: 15,        // 属性length控制线长
+                            lineStyle: {       // 属性lineStyle控制线条样式
+                                color: 'auto',
+                                shadowColor: '#fff', //默认透明
+                                shadowBlur: 10
+                            }
+                        },
+
+                        splitLine: {           // 分隔线
+                            length: 20,         // 属性length控制线长
+                            lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                                width: 4,
+                                color: '#666',
+                            }
+                        },
+
+                        pointer: {           // 分隔线
+                            color:"#000",
+                            width: 15
+                        },
+
+                        title: {				// 仪表盘标题。
+                            show: true,				// 是否显示标题,默认 true。
+                            offsetCenter: [0,"65%"],//相对于仪表盘中心的偏移位置，数组第一项是水平方向的偏移，第二项是垂直方向的偏移。可以是绝对的数值，也可以是相对于仪表盘半径的百分比。
+                            color: "#000",			// 文字的颜色,默认 #333。
+                            fontSize: 20,			// 文字的字体大小,默认 15。
+                        },
+
+                        axisLine: {            // 坐标轴线
+                            lineStyle: {       // 属性lineStyle控制线条样式
+                                color: [[0.2, '#71DD5E'], [0.4, '#1F6FD5'], [0.6, '#FFF155'], [0.8, '#E08011'], [1.0, '#FF2222']],
+                                width: 15,
+                                shadowColor: '#fff', //默认透明
+                                shadowBlur: 10
+                            },
+                            textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                                fontWeight: 'bolder',
+                                color: '#fff',
+                                fontSize: 20
+                            }
+                        },
+
+                        axisLabel: {
+                            backgroundColor: '#fff',
+                            borderRadius: 2,
+                            color: '#000',
+                            padding: 3,
+                            fontSize: 15
+                        },
+
+                        detail: {
+                            // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            formatter: function (value) {
+                                return value.toFixed(2);
+                            },
+                            fontWeight: 'bolder',
+                            borderRadius: 2,
+                            backgroundColor: '#444',
+                            borderColor: '#aaa',
+                            shadowBlur: 5,
+                            shadowColor: '#333',
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 3,
+                            borderWidth: 2,
+                            textBorderColor: '#000',
+                            textBorderWidth: 2,
+                            fontFamily: 'Arial',
+                            width: 100,
+                            color: '#eee',
+                            rich: {}
+                        },
+                    }
+                ]
+            };
+
+            myChart2.setOption(option2, true);
+
+            setInterval(function () {
+                if (Math.random() < 0.33333){
+                    option2.series[0].data[0].value = damage_overall_p[5];
+                    option2.series[0].data[0].name = '加一倍标准差';
+                }
+                if (0.33333 < Math.random() < 0.666667){
+                    option2.series[0].data[0].value = damage_overall_m[5];
+                    option2.series[0].data[0].name = '抗力取中位值';
+                }
+                if (Math.random() > 0.666667){
+                    option2.series[0].data[0].value = damage_overall_d[5];
+                    option2.series[0].data[0].name = '减一倍标准差';
+                }
+                myChart2.setOption(option2, true);
+                //myChart2.resize();
+            },5000);
+        })
+    </script>
+
+{% endblock %}
