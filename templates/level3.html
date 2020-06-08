@@ -25,16 +25,16 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col">
-                    <div class="col-lg-12">
+                    <div class="col-lg-12.1">
                         <div class="card card-primary card-outline 2">
                             <div class="card-header">
                                 <h5 class="m-0">Station Location</h5>
                             </div>
-                            <div class="card-body" id="card1" style="height: 450px; width: 760px">
+                            <div class="card-body" id="card1" style="height: 450px; width: 800px">
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-12">
+                    <div class="col-lg-12.1">
                         <div class="card card-primary card-outline 2">
                             <div class="card-header">
                                 <h5 class="m-0">Station Information</h5>
@@ -77,7 +77,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="col-lg-12">
+                    <div class="col-lg-12.1">
                         <div class="card card-primary card-outline 2">
                             <div class="card-header">
                                 <h5 class="m-0">Damage of this Station</h5>
@@ -99,7 +99,7 @@
                             <div class="card card-primary card-outline 2">
                                 <div class="card-header">
                                     <h5 class="m-0">Response Sepctrum (Period - Acce)</h5>
-                                    <div class="card-body" id="card6" style="height: 250px"></div>
+                                    <div class="card-body" id="card7" style="height: 250px"></div>
                                 </div>
                             </div>
                         </div>
@@ -609,6 +609,106 @@
         });
 
     })
+
+
+    $.get('/dataset_Spectrum', Station_name, function (dataset3) {
+
+        console.log(dataset3);
+
+        var station_name = dataset3.station_name;
+        var time = dataset3.time;
+        var EW_Spectrum = dataset3.EW_Spectrum;
+        var NS_Spectrum = dataset3.NS_Spectrum;
+        var UD_Spectrum = dataset3.UD_Spectrum;
+
+        var myChart3 = echarts.init(document.getElementById('card7'));
+        var option3 = {
+
+            //x轴显示
+            xAxis: {
+                type: 'category',
+                data: time,
+                axisTick:{
+                    interval:19,
+                },
+                axisLabel:{
+                    interval: 19,
+                    show: true,
+                    formatter: function (value, index) {
+                        var round_value = parseFloat(value);
+                        round_value = round_value.toFixed(1);
+                        return round_value
+                    }
+                }
+                // name: "Time (s)",
+                // nameLocation:'middle',         //---轴名称相对位置
+                // nameTextStyle:{             //---坐标轴名称样式
+                //     color:"#000",
+                //     //padding:[20,-75,10,-50], //---坐标轴名称相对位置
+                //     fontSize:14,
+                //     font:'Times New Roman'
+                // },
+            },
+
+            yAxis: {
+                position: 'left',            //---y轴位置
+                type: 'value',
+                // name: "Acceleration \n(m/s^2)",
+                // nameTextStyle:{             //---坐标轴名称样式
+                //     color:"#000",
+                //     fontSize:14,
+                //     font:'Times New Roman'
+                // },
+            },
+            series: [
+                {
+                    data: EW_Spectrum,
+                    type: 'line',
+                    lineStyle: {
+                        color: '#4cb4e7',
+                        width: 2,
+                        type: 'solid',
+                    },
+                },
+                {
+                    data: NS_Spectrum,
+                    type: 'line',
+                    lineStyle: {
+                        color: '#ffc09f',
+                        width: 2,
+                        type: 'solid',
+                    },
+                },
+                {
+                    data: UD_Spectrum,
+                    type: 'line',
+                    lineStyle: {
+                        color: '#2e68aa',
+                        width: 2,
+                        type: 'solid',
+                    },
+                },
+            ],
+
+            grid: {
+                left: '0%',
+                right: '3%',
+                bottom: '0%',
+                top: "3%",
+                containLabel: true
+            },
+
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+        };
+
+        myChart3.setOption(option3);
+        myChart3.resize();
+    });
 
 </script>
 

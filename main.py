@@ -111,7 +111,7 @@ def dataset2():
         return idx / 4
 
     # input station info
-    with open('./data/seismic/station.txt', 'r', encoding='utf-8') as f:
+    with open('./data/seismic/station.txt', 'r') as f:
         f.readline()
         stations = []
         for i, line in enumerate(f.readlines()):
@@ -312,6 +312,31 @@ def GM_data():
         'EW_ACCE': EW_ACCE,
         'NS_ACCE': NS_ACCE,
         'UD_ACCE': UD_ACCE
+    }
+
+    return dataset
+
+@app.route('/dataset_Spectrum')
+def Spectrum_data():
+    station_name = dict(request.args)
+    station_name = list(station_name.keys())[0]
+    # print(station_name)
+    assert os.path.exists("./data/ground motion/%s" % station_name)
+    EW = np.loadtxt("./data/ground motion/%s/EW_Spectrum.txt" % station_name, skiprows=0, delimiter=" ", dtype="float")
+    NS = np.loadtxt("./data/ground motion/%s/NS_Spectrum.txt" % station_name, skiprows=0, delimiter=" ", dtype="float")
+    UD = np.loadtxt("./data/ground motion/%s/UD_Spectrum.txt" % station_name, skiprows=0, delimiter=" ", dtype="float")
+    EW_Spectrum = EW.tolist()
+    NS_Spectrum = NS.tolist()
+    UD_Spectrum = UD.tolist()
+    time = np.arange(0, 6.05, 0.05)
+    time = time.tolist()
+
+    dataset = {
+        'station_name': station_name,
+        "time": time,
+        'EW_Spectrum': EW_Spectrum,
+        'NS_Spectrum': NS_Spectrum,
+        'UD_Spectrum': UD_Spectrum
     }
 
     return dataset
