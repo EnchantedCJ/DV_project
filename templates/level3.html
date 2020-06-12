@@ -310,7 +310,18 @@
                     return params.seriesName + '<br/>' + params.name + ': ' + value;
                 }
             },
-
+            visualMap: {
+                seriesIndex: [1], // use series station
+                dimension: 6,
+                left: 'right',
+                min: 0,
+                max: 1,
+                inRange: {
+                    color: ['#1F6FD5', '#71DD5E', '#FFF155', '#E08011', '#FF2222']
+                },
+                text: ['High', 'Low'],           // 文本，默认为数值文本
+                calculable: true
+            },
             toolbox: {
                 show: true,
                 //orient: 'vertical',
@@ -337,6 +348,11 @@
                     },
                     emphasis: {
                         show: true,
+                        color: '#FF7F50',
+                        fontSize: 16,
+                        backgroundColor: 'rgb(255,255,255,0.8)',
+                        borderRadius: 5,
+                        padding: 5
                     }
                 },
                 itemStyle: {
@@ -427,7 +443,17 @@
                             color: '#ff0000'
                         }
                     },
-                    data: [[station_inf[series][1], station_inf[series][2], station_inf[series][0], PGA[series][0], PGA[series][1], PGA[series][2]]], // lng,lat,name,ew,ns,ud
+                    data: [
+                        [
+                            station_inf[series][1],
+                            station_inf[series][2],
+                            station_inf[series][0],
+                            PGA[series][0],
+                            PGA[series][1],
+                            PGA[series][2],
+                            (damage_hu_zo[series][1] + damage_hu_zo[series][2] * 2 + damage_hu_zo[series][3] * 3 + damage_hu_zo[series][4] * 4) / 4
+                        ]
+                    ], // lng,lat,name,ew,ns,ud
                 }
             ]
         }
@@ -628,10 +654,10 @@
             xAxis: {
                 type: 'category',
                 data: time,
-                axisTick:{
-                    interval:19,
+                axisTick: {
+                    interval: 19,
                 },
-                axisLabel:{
+                axisLabel: {
                     interval: 19,
                     show: true,
                     formatter: function (value, index) {

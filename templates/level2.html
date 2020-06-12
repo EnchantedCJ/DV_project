@@ -79,32 +79,38 @@
         echarts.registerMap('myMap', geojson);
         var myChart = echarts.init(document.getElementById('card1'));
         var option = {
-            // title: {
-            //     text: 'Level 2',
-            //     left: 'right'
-            // },
+            title: {
+                text: '* Colors of stations only show damage index of all types.',
+                left: 'left',
+                top: 'bottom',
+                textStyle: { fontSize: 16, fontWeight: 'lighter' }
+            },
             legend: {
                 icon: 'circle',
                 orient: 'vertical',
-                top: 'bottom',
-                left: 'left',
+                // top: 'top',
+                // left: 'right',
+                top: '10',
+                right: '10',
                 data: [
-                    { name: '热力图-框架结构' },
-                    { name: '热力图-框架-剪力墙结构', },
-                    { name: '热力图-未设防砌体', },
-                    { name: '热力图-设防砌体', },
-                    { name: '热力图-土木结构', },
-                    { name: '热力图-汇总', },
+                    { name: 'Heatmap-Frame' },
+                    { name: 'Heatmap-Frame-Wall', },
+                    { name: 'Heatmap-URM', },
+                    { name: 'Heatmap-RM', },
+                    { name: 'Heatmap-Adobe', },
+                    { name: 'Heatmap-All', },
                 ],
                 selectedMode: 'single',
                 selected: {
-                    '热力图-框架结构': false,
-                    '热力图-框架-剪力墙结构': false,
-                    '热力图-未设防砌体': false,
-                    '热力图-设防砌体': false,
-                    '热力图-土木结构': false,
-                    '热力图-汇总': true
-                }
+                    'Heatmap-Frame': false,
+                    'Heatmap-Frame-Wall': false,
+                    'Heatmap-URM': false,
+                    'Heatmap-RM': false,
+                    'Heatmap-Adobe': false,
+                    'Heatmap-All': true
+                },
+                backgroundColor: 'rgb(255,255,255,0.8)',
+                borderRadius: 5,
             },
             tooltip: {
                 trigger: 'item',
@@ -152,6 +158,11 @@
                     },
                     emphasis: {
                         show: true,
+                        color: '#FF7F50',
+                        fontSize: 16,
+                        backgroundColor: 'rgb(255,255,255,0.8)',
+                        borderRadius: 5,
+                        padding: 5
                     }
                 },
                 itemStyle: {
@@ -210,42 +221,42 @@
 
                 // heatmaps
                 {
-                    name: '热力图-框架结构',
+                    name: 'Heatmap-Frame',
                     type: 'heatmap',
                     coordinateSystem: 'geo',
                     data: stations_heat[0],
                     blurSize: 100
                 },
                 {
-                    name: '热力图-框架-剪力墙结构',
+                    name: 'Heatmap-Frame-Wall',
                     type: 'heatmap',
                     coordinateSystem: 'geo',
                     data: stations_heat[1],
                     blurSize: 100
                 },
                 {
-                    name: '热力图-未设防砌体',
+                    name: 'Heatmap-URM',
                     type: 'heatmap',
                     coordinateSystem: 'geo',
                     data: stations_heat[2],
                     blurSize: 100
                 },
                 {
-                    name: '热力图-设防砌体',
+                    name: 'Heatmap-RM',
                     type: 'heatmap',
                     coordinateSystem: 'geo',
                     data: stations_heat[3],
                     blurSize: 100
                 },
                 {
-                    name: '热力图-土木结构',
+                    name: 'Heatmap-Adobe',
                     type: 'heatmap',
                     coordinateSystem: 'geo',
                     data: stations_heat[4],
                     blurSize: 100
                 },
                 {
-                    name: '热力图-汇总',
+                    name: 'Heatmap-All',
                     type: 'heatmap',
                     coordinateSystem: 'geo',
                     data: stations_heat[5],

@@ -30,8 +30,6 @@
                             <h5 class="m-0">Earthquake Location</h5>
                         </div>
                         <div class="card-body" id="card1" style="height: 600px">
-                            {#                            <iFrame src="http://127.0.0.1:5000/bmap" width="530" height="550" scrolling="no">#}
-                            {#                            </iFrame>#}
                         </div>
                     </div>
                 </div>
@@ -64,7 +62,7 @@
                 <div class="col-lg-12">
                     <div class="card card-primary card-outline">
                         <div class="card-header">
-                            <h5 class="m-0">Timeline</h5>
+                            <h5 class="m-0">Earthquake Timeline</h5>
                         </div>
                         <div class="card-body" id="card3" style="height: 400px">
                         </div>
@@ -92,10 +90,12 @@
         echarts.registerMap('myMap', geojson);
         var myChart = echarts.init(document.getElementById('card1'));
         var option = {
-            // title: {
-            //     text: 'Level 1',
-            //     left: 'right'
-            // },
+            title: {
+                text: '* Red point is for a case demonstration.',
+                left: 'left',
+                top: 'bottom',
+                textStyle: { fontSize: 16, fontWeight: 'lighter' }
+            },
             tooltip: {
                 trigger: 'item',
                 showDelay: 0,
@@ -106,16 +106,18 @@
                     return params.seriesName + '<br/>' + params.name + ': ' + value;
                 }
             },
-            // visualMap: {
-            //     left: 'right',
-            //     min: 500000,
-            //     max: 38000000,
-            //     inRange: {
-            //         color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
-            //     },
-            //     text: ['High', 'Low'],           // 文本，默认为数值文本
-            //     calculable: true
-            // },
+            visualMap: {
+                seriesIndex: [1], // use series other earthquake
+                dimension: 4,
+                left: 'right',
+                min: 4,
+                max: 7,
+                // inRange: {
+                //     color: ['#1F6FD5', '#71DD5E', '#FFF155', '#E08011', '#FF2222']
+                // },
+                text: ['High', 'Low'],           // 文本，默认为数值文本
+                calculable: true
+            },
             toolbox: {
                 show: true,
                 //orient: 'vertical',
@@ -137,7 +139,12 @@
                         show: false
                     },
                     emphasis: {
-                        show: true
+                        show: true,
+                        color: '#FF7F50',
+                        fontSize: 16,
+                        backgroundColor: 'rgb(255,255,255,0.8)',
+                        borderRadius: 5,
+                        padding: 5
                     }
                 },
                 itemStyle: {
@@ -295,14 +302,18 @@
                 {
                     name: 'Time',
                     type: 'time',
-                    splitLine: { show: false }
+                    splitLine: { show: false },
+                    nameTextStyle: { fontSize: 16 },
+                    axisLabel: { fontSize: 16 },
                 }
             ],
             yAxis: [
                 {
                     name: 'Magnitude (Mw)',
                     type: 'value',
-                    min: 4
+                    min: 4,
+                    nameTextStyle: { fontSize: 16 },
+                    axisLabel: { fontSize: 16 },
                 }
             ],
             dataZoom: [
