@@ -79,8 +79,16 @@ def dataset1():
 @app.route('/dataset2')
 def dataset2():
     # input geojson
-    with open('./data/geo/Hebei_county.geojson', 'r', encoding='utf-8') as f:
-        geojson = json.loads(f.read())  # str2dict
+    geojson = {'type': 'FeatureCollection', 'features': []}
+    with open('./data/geo/河北省.json', 'r', encoding='utf-8') as f:
+        temp = json.loads(f.read())  # str2dict
+        geojson['features']+=temp['features']
+    with open('./data/geo/北京市.json', 'r', encoding='utf-8') as f:
+        temp = json.loads(f.read())  # str2dict
+        geojson['features']+=temp['features']
+    with open('./data/geo/天津市.json', 'r', encoding='utf-8') as f:
+        temp = json.loads(f.read())  # str2dict
+        geojson['features']+=temp['features']
 
     # input earthquake info
     with open('./data/seismic/earthquake_info.json', 'r', encoding='utf-8') as f:
@@ -136,11 +144,11 @@ def dataset2():
 
             stations.append(station)
 
-    stations_array=np.array(stations)
+    stations_array = np.array(stations)
     stations_heat = []
     for i in range(6, 12):  # all the damage index
         idx = [0, 1, i]
-        stations_heat.append(stations_array[:,idx].tolist()*20) # add data by *n to make visualization more obvious
+        stations_heat.append(stations_array[:, idx].tolist() * 20)  # add data by *n to make visualization more obvious
 
     # dumping
     dataset = {'geojson': geojson, 'info': info, 'stations': stations, 'stations_heat': stations_heat}
@@ -151,8 +159,16 @@ def dataset2():
 @app.route('/dataset3')
 def dataset3():
     # input geojson
-    with open('./data/station_damage/Hebei_county.geojson', 'r', encoding='utf-8') as f:
-        geojson = json.loads(f.read())  # str2dict
+    geojson = {'type': 'FeatureCollection', 'features': []}
+    with open('./data/geo/河北省.json', 'r', encoding='utf-8') as f:
+        temp = json.loads(f.read())  # str2dict
+        geojson['features']+=temp['features']
+    with open('./data/geo/北京市.json', 'r', encoding='utf-8') as f:
+        temp = json.loads(f.read())  # str2dict
+        geojson['features']+=temp['features']
+    with open('./data/geo/天津市.json', 'r', encoding='utf-8') as f:
+        temp = json.loads(f.read())  # str2dict
+        geojson['features']+=temp['features']
 
     # input earthquake info
     with open('./data/station_damage/earthquake_info.json', 'r', encoding='utf-8') as f:
@@ -200,8 +216,16 @@ def dataset3():
 @app.route('/dataset4')
 def dataset4():
     # input geojson
-    with open('./data/station_damage/Hebei_county.geojson', 'r', encoding='utf-8') as f:
-        geojson = json.loads(f.read())  # str2dict
+    geojson = {'type': 'FeatureCollection', 'features': []}
+    with open('./data/geo/河北省.json', 'r', encoding='utf-8') as f:
+        temp = json.loads(f.read())  # str2dict
+        geojson['features']+=temp['features']
+    with open('./data/geo/北京市.json', 'r', encoding='utf-8') as f:
+        temp = json.loads(f.read())  # str2dict
+        geojson['features']+=temp['features']
+    with open('./data/geo/天津市.json', 'r', encoding='utf-8') as f:
+        temp = json.loads(f.read())  # str2dict
+        geojson['features']+=temp['features']
 
     # input earthquake info
 
@@ -315,6 +339,7 @@ def GM_data():
     }
 
     return dataset
+
 
 @app.route('/dataset_Spectrum')
 def Spectrum_data():
