@@ -11,8 +11,8 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url_for('level2') }}">Home</a></li>
-                        <li class="breadcrumb-item active">Level 2</li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('level1') }}">Home</a></li>
+                        <li class="breadcrumb-item active">Level 3</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -80,7 +80,7 @@
                     <div class="col-lg-12.1">
                         <div class="card card-primary card-outline 2">
                             <div class="card-header">
-                                <h5 class="m-0">Damage of this Station</h5>
+                                <h5 class="m-0">Damage of <thead></thead> Station</h5>
                             </div>
                             <div class="card-body" id="card3" style="height: 615px; width: 100%">
                             </div>
@@ -90,7 +90,7 @@
                         <div class="col-lg-6">
                             <div class="card card-primary card-outline 2">
                                 <div class="card-header">
-                                    <h5 class="m-0">Ground Motion EW (Time - Acce)</h5>
+                                    <h5 class="m-0">Ground Motion UD (Time - Acce)</h5>
                                     <div class="card-body" id="card6" style="height: 250px"></div>
                                 </div>
                             </div>
@@ -462,12 +462,12 @@
             legend: {
                 itemWidth: 25,
                 itemHeight: 25,
-                data: ["完好", "轻微破坏", "中等破坏", "严重破坏", "毁坏"],
+                data: ["None", "Slight", "Moderate", "Extensive", "Collapse"],
             },
 
             //x轴显示
             xAxis: {
-                data: ["框架\n结构", "框架-剪力墙\n结构", "未设防\n砌体", "设防\n砌体", "土木\n结构", "汇总"],
+                data: ["Frame", "Frame-Wall", "Unreinforeced\nMasonry", "Reinforced\nMasonry", "Adobe", "All"],
                 splitLine: {
                     show: true
                 },
@@ -550,7 +550,7 @@
 
             series: [
                 {
-                    name: '完好',
+                    name: 'None',
                     type: 'bar',
                     //data: station_damage[series][]
                     stack: '1',
@@ -560,7 +560,7 @@
                     data: [damage_frame[series][0], damage_shear[series][0], damage_un_ma[series][0], damage_re_ma[series][0], damage_tu_mu[series][0], damage_hu_zo[series][0]]
                 },
                 {
-                    name: '轻微破坏',
+                    name: 'Slight',
                     type: 'bar',
                     stack: '1',
                     itemStyle: {
@@ -569,7 +569,7 @@
                     data: [damage_frame[series][1], damage_shear[series][1], damage_un_ma[series][1], damage_re_ma[series][1], damage_tu_mu[series][1], damage_hu_zo[series][1]]
                 },
                 {
-                    name: '中等破坏',
+                    name: 'Moderate',
                     type: 'bar',
                     stack: '1',
                     itemStyle: {
@@ -578,7 +578,7 @@
                     data: [damage_frame[series][2], damage_shear[series][2], damage_un_ma[series][2], damage_re_ma[series][2], damage_tu_mu[series][2], damage_hu_zo[series][2]]
                 },
                 {
-                    name: '严重破坏',
+                    name: 'Extensive',
                     type: 'bar',
                     stack: '1',
                     itemStyle: {
@@ -587,7 +587,7 @@
                     data: [damage_frame[series][3], damage_shear[series][3], damage_un_ma[series][3], damage_re_ma[series][3], damage_tu_mu[series][3], damage_hu_zo[series][3]]
                 },
                 {
-                    name: '毁坏',
+                    name: 'Collapse',
                     type: 'bar',
                     barWidth: 50,
                     stack: '1',

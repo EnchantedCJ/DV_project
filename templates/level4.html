@@ -11,8 +11,8 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{ url_for('level3') }}">Home</a></li>
-                            <li class="breadcrumb-item active">Level 3</li>
+                            <li class="breadcrumb-item"><a href="{{ url_for('level1') }}">Home</a></li>
+                            <li class="breadcrumb-item active">Level 4</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -37,7 +37,7 @@
                     <div class="col-lg-6">
                         <div class="card card-primary card-outline 2">
                             <div class="card-header">
-                                <h5 class="m-0">Damage Index (Resistance ±1 SD)</h5>
+                                <h5 class="m-0">Damage Index (Resistance ±1 STD)</h5>
                                 <div class="card-body" id="card4" style="height: 700px; width: 750px"></div>
                             </div>
                         </div>
@@ -148,7 +148,7 @@ const Station_name = sessionStorage.getItem("stationname");
                 // },
                 legend: {
                     bottom: 5,
-                    data: ['加一倍标准差', '抗力取中位值', '减一倍标准差'],
+                    data: ['+1 STD', 'Median', '-1 STD'],
                     itemGap: 20,
                     textStyle: {
                         color: '#fff',
@@ -206,7 +206,7 @@ const Station_name = sessionStorage.getItem("stationname");
                 },
                 series: [
                     {
-                        name: '加一倍标准差',
+                        name: '+1 STD',
                         type: 'radar',
                         lineStyle: lineStyle,
                         data: [damage_overall_p],
@@ -219,7 +219,7 @@ const Station_name = sessionStorage.getItem("stationname");
                         }
                     },
                     {
-                        name: '抗力取中位值',
+                        name: 'Median',
                         type: 'radar',
                         lineStyle: lineStyle,
                         data: [damage_overall_d],
@@ -232,7 +232,7 @@ const Station_name = sessionStorage.getItem("stationname");
                         }
                     },
                     {
-                        name: '减一倍标准差',
+                        name: '-1 STD',
                         type: 'radar',
                         lineStyle: lineStyle,
                         data: [damage_overall_m],

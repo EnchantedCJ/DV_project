@@ -27,7 +27,7 @@
                 <div class="col-lg-6">
                     <div class="card card-primary card-outline">
                         <div class="card-header">
-                            <h5 class="m-0">Station Location</h5>
+                            <h5 class="m-0">Station Location & Damage Index</h5>
                         </div>
                         <div class="card-body" id="card1" style="height: 600px">
                         </div>
@@ -48,7 +48,7 @@
                                         <th>PGA EW</th>
                                         <th>PGA NS</th>
                                         <th>PGA UD</th>
-                                        <th>Damage Score</th>
+                                        <th>Damage Index</th>
                                     </tr>
                                 </thead>
                                 <tbody id="card2">
@@ -79,10 +79,10 @@
         echarts.registerMap('myMap', geojson);
         var myChart = echarts.init(document.getElementById('card1'));
         var option = {
-            title: {
-                text: 'Level 2',
-                left: 'right'
-            },
+            // title: {
+            //     text: 'Level 2',
+            //     left: 'right'
+            // },
             legend: {
                 icon: 'circle',
                 orient: 'vertical',
@@ -275,7 +275,7 @@
                                 + 'EW: ' + params.value[3] + ' <br/>'
                                 + 'NS: ' + params.value[4] + ' <br/>'
                                 + 'UD: ' + params.value[5] + ' <br/>'
-                                + 'Damage Score: ' + params.value[11] + ' <br/>'
+                                + 'Damage Index: ' + params.value[11] + ' <br/>'
                         }
                     },
                     itemStyle: {
