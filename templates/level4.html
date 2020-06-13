@@ -56,12 +56,11 @@ const Station_name = sessionStorage.getItem("stationname");
 
         $.get('/dataset4', function (dataset2){
 
-            console.log(dataset2);
+            // console.log(dataset2);
             
-            var dataset_p = dataset2.dataset_p;
-            var dataset_m = dataset2.dataset_m;
-            var dataset_d = dataset2.dataset_d;
-            var geojson = dataset2.geojson;
+            var dataset_p = dataset2.dataset_p; // 0
+            var dataset_m = dataset2.dataset_m; // -1
+            var dataset_d = dataset2.dataset_d; // +1
 
             var station_inf = dataset_p.station_inf;
             var damage_frame_p = dataset_p.damage_frame;
@@ -92,7 +91,7 @@ const Station_name = sessionStorage.getItem("stationname");
                 if (station_inf[i] == Station_name)
                     series = i;
             }
-            console.log(station_inf[series]);
+            // console.log(station_inf[series]);
 
             var lineStyle = {
                 normal: {
@@ -101,7 +100,7 @@ const Station_name = sessionStorage.getItem("stationname");
                 }
             };
 
-            var damage_info_p = [damage_frame_p[series], damage_shear_p[series], damage_un_ma_p[series], damage_re_ma_p[series], damage_tu_mu_p[series], damage_hu_zo_p[series]];
+            var damage_info_p = [damage_frame_p[series], damage_shear_p[series], damage_un_ma_p[series], damage_hu_zo_p[series], damage_tu_mu_p[series], damage_re_ma_p[series]];
             var damage_overall_p = [0, 0, 0, 0, 0, 0];
 
             for (j = 0; j < 6; j++) {
@@ -113,7 +112,7 @@ const Station_name = sessionStorage.getItem("stationname");
             }
 
 
-            var damage_info_m = [damage_frame_m[series], damage_shear_m[series], damage_un_ma_m[series], damage_re_ma_m[series], damage_tu_mu_m[series], damage_hu_zo_m[series]];
+            var damage_info_m = [damage_frame_m[series], damage_shear_m[series], damage_un_ma_m[series], damage_hu_zo_m[series], damage_tu_mu_m[series], damage_re_ma_m[series]];
             var damage_overall_m = [0, 0, 0, 0, 0, 0];
 
             for (j = 0; j < 6; j++) {
@@ -124,16 +123,19 @@ const Station_name = sessionStorage.getItem("stationname");
                 damage_overall_m[j] = damage_overall_m[j] / 4;
             }
 
-            var damage_info_d = [damage_frame_d[series], damage_shear_d[series], damage_un_ma_d[series], damage_re_ma_d[series], damage_tu_mu_d[series], damage_hu_zo_d[series]];
+            var damage_info_d = [damage_frame_d[series], damage_shear_d[series], damage_un_ma_d[series], damage_hu_zo_d[series], damage_tu_mu_d[series], damage_re_ma_d[series]];
             var damage_overall_d = [0, 0, 0, 0, 0, 0];
-
+            
             for (j = 0; j < 6; j++) {
                 damage_this_series = damage_info_d[j];
+                console.log(damage_this_series)
                 for (i = 0; i < 5; i++) {
                     damage_overall_d[j] = damage_overall_d[j] + i * damage_this_series[i];
                 }
                 damage_overall_d[j] = damage_overall_d[j] / 4;
             }
+
+            console.log(damage_overall_d)
 
             var myChart = echarts.init(document.getElementById('card4'));
 
@@ -157,25 +159,35 @@ const Station_name = sessionStorage.getItem("stationname");
                     selectedMode: 'single'
                 },
 
-                tooltip: {},
-                // visualMap: {
-                //     show: true,
-                //     min: 0,
-                //     max: 20,
-                //     dimension: 6,
-                //     inRange: {
-                //         colorLightness: [0.5, 0.8]
-                //     }
-                // },
+                tooltip: {
+                    formatter:function(params){
+                        var tooltip_this = ""
+                        var name_series = ['Frame Structure', 'Frame Shear-wall', 'Unreinforced Masonry', 'Overall', 'Adobe Structure', 'Reinforced Masonry']
+                        for (j = 0; j < 6; j++) {
+                            temp_j = j
+                            if (j == 3){
+                                temp_j = 5
+                            }
+                            if (j == 5){
+                                temp_j = 3
+                            }
+                            tooltip_this = tooltip_this + name_series[temp_j] + ": " + params.value[temp_j].toFixed(3)
+                            if (j != 5){
+                                tooltip_this = tooltip_this + "</br>"
+                            }
+                        }
+                        return tooltip_this
+                    }
+                },
 
                 radar: {
                     indicator: [
-                        {name: '框架结构', max: 1, min: 0},
-                        {name: '框架-\n剪力墙', max: 1, min: 0},
-                        {name: '未设防\n砌体', max: 1, min: 0},
-                        {name: '设防砌体', max: 1, min: 0},
-                        {name: '土木\n结构', max: 1, min: 0},
-                        {name: '总体\n情况', max: 1, min: 0}
+                        {name: 'Frame\nStructure', max: 1, min: 0},
+                        {name: 'Frame-  \nShear-wall', max: 1, min: 0},
+                        {name: 'Unreinforced\nMasonry   ', max: 1, min: 0},
+                        {name: 'Overall', max: 1, min: 0},
+                        {name: '  Adobe\nStructure', max: 1, min: 0},
+                        {name: 'Reinforced\n  Masonry', max: 1, min: 0}
                     ],
                     shape: 'circle',
                     splitNumber: 5,
@@ -265,7 +277,7 @@ const Station_name = sessionStorage.getItem("stationname");
                         name: '总体震害情况',
                         type: 'gauge',
                         // center: ['77%', '50%'], 
-                        data: [{value: damage_overall_p[5], name: '加一倍标准差', itemStyle:{color:"71DD5E"}}],
+                        data: [{value: damage_overall_d[3], name: 'Overall Damage Index\n\nResistance: Standard Value', itemStyle:{color:"71DD5E"}}],
                         min: 0,
                         max: 1,
 
@@ -293,7 +305,7 @@ const Station_name = sessionStorage.getItem("stationname");
 
                         title: {				// 仪表盘标题。
                             show: true,				// 是否显示标题,默认 true。
-                            offsetCenter: [0,"65%"],//相对于仪表盘中心的偏移位置，数组第一项是水平方向的偏移，第二项是垂直方向的偏移。可以是绝对的数值，也可以是相对于仪表盘半径的百分比。
+                            offsetCenter: [0,"70%"],//相对于仪表盘中心的偏移位置，数组第一项是水平方向的偏移，第二项是垂直方向的偏移。可以是绝对的数值，也可以是相对于仪表盘半径的百分比。
                             color: "#000",			// 文字的颜色,默认 #333。
                             fontSize: 20,			// 文字的字体大小,默认 15。
                         },
@@ -321,9 +333,8 @@ const Station_name = sessionStorage.getItem("stationname");
                         },
 
                         detail: {
-                            // 其余属性默认使用全局文本样式，详见TEXTSTYLE
                             formatter: function (value) {
-                                return value.toFixed(2);
+                                return value.toFixed(3);
                             },
                             fontWeight: 'bolder',
                             borderRadius: 2,
@@ -346,23 +357,7 @@ const Station_name = sessionStorage.getItem("stationname");
             };
 
             myChart2.setOption(option2, true);
-
-            setInterval(function () {
-                if (Math.random() < 0.33333){
-                    option2.series[0].data[0].value = damage_overall_p[5];
-                    option2.series[0].data[0].name = '加一倍标准差';
-                }
-                if (0.33333 < Math.random() < 0.666667){
-                    option2.series[0].data[0].value = damage_overall_m[5];
-                    option2.series[0].data[0].name = '抗力取中位值';
-                }
-                if (Math.random() > 0.666667){
-                    option2.series[0].data[0].value = damage_overall_d[5];
-                    option2.series[0].data[0].name = '减一倍标准差';
-                }
-                myChart2.setOption(option2, true);
-                //myChart2.resize();
-            },5000);
+            myChart2.resize();
         })
     </script>
 
